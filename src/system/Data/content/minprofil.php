@@ -104,6 +104,7 @@ $contents['content_main'] = '
         </form>
     </div>
     <div class="col-lg-7 col-sm-6 col-xs-12">
+    <pre>' . print_r($user_info, true) . '</pre>
         <h2>FAQ</h2>
         <h3>Varför måste jag fylla i så mycket personlig info?</h3>
             <p>Vi behöver informationen av flera anledningar:</p>
