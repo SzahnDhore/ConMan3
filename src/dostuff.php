@@ -591,34 +591,37 @@ class Dostuff
             $update_email_request = array(
                 'table' => 'users',
                 'id' => $_SESSION['user']['info']['data']['id'],
-                'values' => array(
-                    'given_name' => $_POST['form_profile_given_name'],
-                    'family_name' => $_POST['form_profile_family_name'],
-                    'address' => $_POST['form_profile_address'],
-                    'postal_code' => $_POST['form_profile_postal_code'],
-                    'city' => $_POST['form_profile_city'],
-                    'male' => $_POST['form_profile_gender'],
-                    'national_id_number' => $_POST['form_profile_national_id_number'],
-                    'phone_number' => $_POST['form_profile_phone_number'],
-                ),
+                'values' => array('email' => $_POST['form_profile_email'], ),
             );
+            Data\Database::update($update_email_request, false);
 
-            Data\Database::update($update_profile_request, false);
-            $update_profile_request = array(
-                'table' => 'user_details',
-                'id' => $_SESSION['user']['info']['data']['id'],
-                'values' => array(
-                    'given_name' => $_POST['form_profile_given_name'],
-                    'family_name' => $_POST['form_profile_family_name'],
-                    'address' => $_POST['form_profile_address'],
-                    'postal_code' => $_POST['form_profile_postal_code'],
-                    'city' => $_POST['form_profile_city'],
-                    'male' => $_POST['form_profile_gender'],
-                    'national_id_number' => $_POST['form_profile_national_id_number'],
-                    'phone_number' => $_POST['form_profile_phone_number'],
-                ),
-            );
-            Data\Database::update($update_profile_request, false);
+            // $user_id_request = array(
+            // 'table' => 'users',
+            // 'limit' => 1,
+            // 'where' => array(
+            // 'col' => 'email',
+            // 'values' => $_POST['form_profile_email'],
+            // ),
+            // );
+            // $user_email = Data\Database::read($user_email_request, false);
+
+            // --- TODO: Add code to find the correct ID for the user_details.
+
+            // $update_profile_request = array(
+            // 'table' => 'user_details',
+            // 'id' => $_SESSION['user']['info']['data']['id'],
+            // 'values' => array(
+            // 'given_name' => $_POST['form_profile_given_name'],
+            // 'family_name' => $_POST['form_profile_family_name'],
+            // 'address' => $_POST['form_profile_address'],
+            // 'postal_code' => $_POST['form_profile_postal_code'],
+            // 'city' => $_POST['form_profile_city'],
+            // 'male' => $_POST['form_profile_gender'],
+            // 'national_id_number' => $_POST['form_profile_national_id_number'],
+            // 'phone_number' => $_POST['form_profile_phone_number'],
+            // ),
+            // );
+            // Data\Database::update($update_profile_request, false);
         }
 
         Data\Login::doLogin($_SESSION['user']['info']['data']['username']);
