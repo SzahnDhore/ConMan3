@@ -575,24 +575,55 @@ class Dostuff
 
     public static function update_profile()
     {
-        // print_r($_SESSION);
-
-        $update_profile_request = array(
-            'table' => 'user_details',
-            'id' => $_SESSION['user']['info']['data']['id'],
-            'values' => array(
-                'given_name' => $_POST['form_profile_given_name'],
-                'family_name' => $_POST['form_profile_family_name'],
-                'address' => $_POST['form_profile_address'],
-                'postal_code' => $_POST['form_profile_postal_code'],
-                'city' => $_POST['form_profile_city'],
-                'male' => $_POST['form_profile_gender'],
-                'national_id_number' => $_POST['form_profile_national_id_number'],
-                'phone_number' => $_POST['form_profile_phone_number'],
+        $user_email_request = array(
+            'table' => 'users',
+            'limit' => 1,
+            'where' => array(
+                'col' => 'email',
+                'values' => $_POST['form_profile_email'],
             ),
         );
+        $user_email = Data\Database::read($user_email_request, false);
 
-        Data\Database::update($update_profile_request, false);
+        if (isset($user_email[0]) && $_POST['form_profile_email'] !== $_SESSION['user']['info']['data']['email']) {
+            View\Alerts::set('warning', 'Den här epostadressen är redan upptagen.');
+        } else {
+            $update_email_request = array(
+                'table' => 'users',
+                'id' => $_SESSION['user']['info']['data']['id'],
+                'values' => array('email' => $_POST['form_profile_email'], ),
+            );
+            Data\Database::update($update_email_request, false);
+
+            // $user_id_request = array(
+            // 'table' => 'users',
+            // 'limit' => 1,
+            // 'where' => array(
+            // 'col' => 'email',
+            // 'values' => $_POST['form_profile_email'],
+            // ),
+            // );
+            // $user_email = Data\Database::read($user_email_request, false);
+
+            // --- TODO: Add code to find the correct ID for the user_details.
+
+            // $update_profile_request = array(
+            // 'table' => 'user_details',
+            // 'id' => $_SESSION['user']['info']['data']['id'],
+            // 'values' => array(
+            // 'given_name' => $_POST['form_profile_given_name'],
+            // 'family_name' => $_POST['form_profile_family_name'],
+            // 'address' => $_POST['form_profile_address'],
+            // 'postal_code' => $_POST['form_profile_postal_code'],
+            // 'city' => $_POST['form_profile_city'],
+            // 'male' => $_POST['form_profile_gender'],
+            // 'national_id_number' => $_POST['form_profile_national_id_number'],
+            // 'phone_number' => $_POST['form_profile_phone_number'],
+            // ),
+            // );
+            // Data\Database::update($update_profile_request, false);
+        }
+
         Data\Login::doLogin($_SESSION['user']['info']['data']['username']);
         View\Alerts::set('success', 'Dina personuppgifter har sparats.');
 
