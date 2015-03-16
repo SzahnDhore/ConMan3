@@ -20,20 +20,9 @@ The basic idea is to build a solid system for managing visitors and events at an
 * Secure handling of MySQL data through prepared statements.
 
 
-## ToDo-list
-
-* Add data validation for the user data form.
-* Make it possible to delete events.
-* Make it possible to delete schedule posts.
-* Make it possible for users to sign up for events.
-* Have the system auto-generate the menu.
-* Put all page content in the database.
-* Rearrange the code to better reflect how I want the design pattern to work.
-
-
 ## Changelog
 
-### Current version
+### Latest version
 
 #### v0.4 - 2015-02-26
 
