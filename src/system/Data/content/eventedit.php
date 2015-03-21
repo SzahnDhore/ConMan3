@@ -24,7 +24,8 @@ if (isset($_GET['event_id']) && is_numeric($_GET['event_id'])) {
 }
 
 if ($_GET['event_id'] !== 'new') {
-    if ($event_info['contact'] == $_SESSION['user']['info']['data']['id'] || $_SESSION['user']['info']['data']['account_type'] > 2) {
+    $role = Data\Role::getRolePermissions($_SESSION['user']['info']['data']['account_type']);
+    if ($event_info['contact'] == $_SESSION['user']['info']['data']['id'] || $role->hasPermission(Data\Role::PERM_EDIT_ALL_EVENTS)) {
     } else {
         header('Location: ' . Data\Settings::main('base_url') . 'index.php?page=arrangemang');
         exit ;
