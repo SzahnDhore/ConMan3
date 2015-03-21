@@ -12,6 +12,7 @@ $user_access = $_SESSION['user']['info']['data']['account_type'];
 $event_class = new Data\Event;
 $all_events_raw = $event_class->getAllEvents();
 
+$all_events = [];
 foreach ($all_events_raw as $key => $event) {
     if ($event['approved'] == '1' || $user_access > 2 || $event['contact'] == $_SESSION['user']['info']['data']['id']) {
         $all_events[$event['event_type_order']][] = $event;
@@ -62,6 +63,7 @@ if (isset($schedule[0])) {
 } else {
 }
 
+$events_body = [];
 foreach ($all_events as $category => $category_events) {
     $events_count = count($category_events);
     $events_body[] = '

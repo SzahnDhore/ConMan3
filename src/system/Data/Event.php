@@ -144,7 +144,7 @@ class Event
                 $out[$key] = $value;
             }
         } else {
-            $out = false;
+            $out = [];
         }
 
         return $out;
