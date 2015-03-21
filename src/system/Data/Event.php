@@ -158,6 +158,7 @@ class Event
             'orderby' => '`order`',
         );
         $categories_raw = Data\Database::read($categories_request, false);
+        $categories = [];
         foreach ($categories_raw as $key => $category) {
             $selected_html = ($selected === null ? '' : ($selected == $category['event_types_id'] ? ' selected="selected"' : ''));
             $categories[] = '
