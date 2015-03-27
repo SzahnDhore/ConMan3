@@ -13,6 +13,7 @@ use \Szandor\ConMan\View as View;
 // print_r($_SESSION['user']);
 
 $user_info = $_SESSION['user']['info'];
+$registration_data = Data\User::getConventionRegistrationData($_SESSION['user']['info']['data']['id']);
 
 /**
  * The following is simple contents.
@@ -36,91 +37,67 @@ $contents['content_main'] = '
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-6 col-xs-12">
-        <h3>Personuppgifter</h3>
-        <dl class="dl-horizontal">
-            <dt>Förnamn</dt>
-            <dd><a href="#" id="edit_given_name" class="editable-text" data-type="text" data-title="Ange förnamn">' . $user_info['details']['given_name'] . '</a></dd>
-            <dt>Efternamn</dt>
-            <dd><a href="#" id="edit_family_name" class="editable-text" data-type="text" data-title="Ange efternamn">' . $user_info['details']['family_name'] . '</a></dd>
-            <dt>Adress</dt>
-            <dd>' . $user_info['details']['address'] . '</dd>
-            <dt>Postnr.</dt>
-            <dd>' . $user_info['details']['postal_code'] . '</dd>
-            <dt>Stad</dt>
-            <dd>' . $user_info['details']['city'] . '</dd>
-            <dt>Telenr.</dt>
-            <dd>' . $user_info['details']['phone_number'] . '</dd>
-            <dt>Epost</dt>
-            <dd>' . $user_info['data']['email'] . '</dd>
-            <dt>Personnr.</dt>
-            <dd>' . $user_info['details']['national_id_number'] . '</dd>
-            <dt>Binärt kön</dt>
-            <dd>' . $user_info['details']['gender'] . '</dd>
-        </dl>
-        <h3>Status</h3>
-        <dl class="dl-horizontal">
-            <dt>Anmälan</dt>
-            <dd>Ej inskickad</dd>
-            <dt>Betalning</dt>
-            <dd>Ej registrerad</dd>
-        </dl>
-    </div>
-    <div class="col-sm-6 col-xs-12">
-        <h3>Din anmälan</h3>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Namn</th>
-                    <th class="text-right">Kostnad</th>
-                    <th>&nbsp;</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Inträde (arrangör)</td>
-                    <td class="text-right">0 kr</td>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr>
-                    <td>Magic: FNM</td>
-                    <td class="text-right">80 kr</td>
-                    <td><span class="fa fa-remove"></span></td>
-                </tr>
-                <tr>
-                    <td>Mugg</td>
-                    <td class="text-right">50 kr</td>
-                    <td><span class="fa fa-remove"></span></td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td>Att betala:</td>
-                    <td class="text-right">130 kr</td>
-                    <td>&nbsp;</td>
-                </tr>
-            </tfoot>
-        </table>
-        <div class="row">
-            <div class="col-xs-6">
-                <a href="#" class="btn btn-info btn-block">Spara ändringar</a>
+    <form id="form_register_convention" name="form_register_convention" class="form-horizontal" action="dostuff.php" method="post">
+        <div class="col-sm-6 col-xs-12">
+            <div' . (!empty($registration_data) ? " style=\"display: none;\"" : "") . '>
+                <h3>Anmälan WSK 2015</h3>
+                <p>Barn under 13 år betalar endast medlemsavgift för inträde på konventet. Medlemmar får 150kr i rabatt på inträde.</p>
+                <dl class="dl-horizontal">
+                    <div id="registration_entrance">
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="member" value="1" id="registration_member">
+                            Jag vill bli medlem i WSK - 100kr
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="mug" value="1" id="registration_mug">
+                            Jag vill köpa åretskonventsmugg - 50kr
+                        </label>
+                    </div>
+                </dl>
             </div>
-            <div class="col-xs-6">
-                <a href="#" class="btn btn-success btn-block">Skicka anmälan</a>
+            <h3>Status</h3>
+            <dl class="dl-horizontal">
+                <dt>Anmälan</dt>
+                <dd>' . (!empty($registration_data) ? "Inskickad" : "Ej inskickad") . '</dd>
+                <dt>Betalning</dt>
+                <dd>' . (!empty($registration_data) && $registration_data[0]['payment_registered'] == '1' ? "Registrerad" : "Ej registrerad") . '</dd>
+            </dl>
+        </div>
+        <div class="col-sm-6 col-xs-12">
+            <h3>Din anmälan</h3>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Namn</th>
+                        <th class="text-right">Kostnad</th>
+                    </tr>
+                </thead>
+                <tbody id="registration_details">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>Att betala:</td>
+                        <td class="text-right" id="registration_sum">0 kr</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="row">
+                <div class="col-xs-6">
+                </div>
+                <div class="col-xs-6">
+                    <button type="submit" class="btn btn-success btn-block" id="form_register_convention_submit" name="submit_dostuff" value="register_convention"' . (!empty($registration_data) ? " disabled=\"disabled\"" : "") . '>Skicka anmälan</button>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 </div>
 <div class="row">
     <div class="col-xs-12">
         <h2>FAQ</h2>
-        <h3>Varför måste jag fylla i så mycket personlig info?</h3>
-            <p>Vi behöver informationen av flera anledningar:</p>
-            <p><strong>Konventets aktiviteter</strong> är generellt sett bara till för betalande deltagare. Därför behöver vi en lista på vilka som har betalat och för vad.</p>
-            <p><strong>Räddningstjänsten</strong> behöver en namnlista uppsatt på allmänt tillgänglig plats på skolan över vilka personer som sover var. Därför är det också jätteviktigt att du anmäler dig som sovande på konventet. Folk som sover på konventet utan att ha anmält sig kan bli bötfällda.</p>
-            <p><strong>Sverok</strong> får en lista på alla deltagare som vill bli medlemmar. Dessa skrivs in i eBas. Om du inte vill bli medlem i föreningen så hamnar du inte i eBas.</p>
-        <h3>Varför kan jag bara välja mellan två kön?</h3>
-            <p>Därför att vi rapporterar in datan till system som inte klarar av annat än en binär könsuppdelning.</p>
         <h3>Jag skrev inte mitt personnummer på inbetalningen</h3>
             <p>Då vet vi inte vilken inbetalning som är din och kan inte registrera dig som betald. Tack för din donation till föreningen!</p>
             <p>Skämt åsido så kan vi försöka spåra betalningen så du får tillbaka dina pengar, men vi kan inte lova att vi hittar den och det kan ta lite tid att lösa. Hör av dig i god tid innan konventet drar igång om du skulle komma på att det här har hänt. Om det inte blir löst innan dess får du vara beredd på att betala dubbelt tills dess att vi hunnit sätta tillbaka pengarna.</p>
@@ -134,35 +111,61 @@ $contents['content_main'] = '
 $contents['content_bottom'] = '
 <script>
     $(document).ready(function() {
-        $(".editable-text").editable({
-            emptytext: "Tomt",
+        var member = true;
+        var mug = false;
+        var sum = 0;
+
+        // pagesetup begin
+        var registrationEntranceTypes = [
+            [\'Inträde WSK 2015, hela konventet\', 300],
+            [\'Inträde WSK 2015, fredag\', 150],
+            [\'Inträde WSK 2015, lördag\', 200],
+            [\'Inträde WSK 2015, söndag\', 150],
+            [\'Inget inträde, jag vill bara stöja föreningen och/eller är under 13 år\', 0]
+        ];
+
+        var entrance = $("#registration_entrance");
+        for (var i = 0; i < registrationEntranceTypes.length; i++) {
+            entrance.append("<div class=\"radio\"><label><input type=\"radio\" name=\"entrance_type\" id=\"entrance_type" +i.toString() +"\" value=\"" +i.toString() +"\">" +registrationEntranceTypes[i][0] +" - " +registrationEntranceTypes[i][1] +"kr</label></div>");
+        }
+        $(\'#entrance_type0\').prop(\'checked\', true);
+        $(\'#registration_member\').prop(\'checked\', true);
+
+        // pagesetup ends
+        $("#registration_entrance").change(function() {
+            updateTable();
         });
-        $(".edit_ean").editable();
-        $(".edit_kategori").editable({
-            source: [
-                {value: 3, text: "Block & papper"},
-                {value: 1, text: "Pennor"},
-                {value: 2, text: "Förvaring"},
-                {value: 5, text: "Ätbart"},
-                {value: 4, text: "Kläder"},
-                {value: 0, text: "Övrigt"},
-                {value: 6, text: "Kontorsmateriel"},
-                {value: 11, text: "Datortillbehör"},
-                {value: 12, text: "Tjänster"},
-                {value: 7, text: "Väskor"}
-            ]
+        
+        $("#registration_member").change(function() {
+            member = this.checked;
+            updateTable();
         });
-        $(".edit_profilprodukt").editable({
-            source: [
-                { value: 0, text: "Ej profilprodukt" },
-                { value: 1, text: "Profilprodukt" }
-            ]
+
+         $("#registration_mug").change(function() {
+            mug = this.checked;
+            updateTable();
         });
-        $(".edit_pris_exkl_moms").editable();
-        $(".edit_pris_inkl_moms").editable();
-        $(".edit_anteckning").editable({
-            rows: 4,
-            showbuttons: "bottom"
-        });
+
+        function updateTable() {
+            $("#registration_details").empty();
+            sum = 0;
+            var entranceIndex = $("#registration_entrance input[type=\'radio\']:checked").val();
+            addItemToRegistrationSum(registrationEntranceTypes[entranceIndex][0], registrationEntranceTypes[entranceIndex][1]);
+            if (member) {
+                addItemToRegistrationSum("Medlemsavgift", 100);
+                if (entranceIndex < 4) {
+                    addItemToRegistrationSum("Medlemsrabatt - inträde", -150);
+                }
+            }
+            if (mug) { addItemToRegistrationSum("Mugg", 50); }
+            $("#registration_sum").html(sum.toString() +" kr");
+        }
+
+        function addItemToRegistrationSum(description, price) {
+            $("#registration_details").append("<tr><td>" +description +"</td><td class=\"text-right\">" +price.toString() +" kr</td></tr>");
+            sum += price;
+        }
+
+        updateTable();
     });
 </script>';

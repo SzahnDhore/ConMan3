@@ -96,7 +96,12 @@ switch ($_POST['submit_dostuff']) {
         $go_to_page = 'index.php?page=minprofil';
         break;
 
-    default :
+    case 'register_convention' :
+        Dostuff::register_convention();
+        $go_to_page = 'index.php?page=anmalningar';
+        break;
+
+        default :
         break;
 }
 
@@ -628,6 +633,35 @@ class Dostuff
         View\Alerts::set('success', 'Dina personuppgifter har sparats.');
 
         return true;
+    }
+    
+    public static function register_convention()
+    {
+        $request = array(
+            'table' => 'convention_registrations',
+            'data' => array( array(
+                    'users_id' => $_SESSION['user']['info']['data']['id'],
+                    'entrance_type' => $_POST['entrance_type'],
+                    'member' => (isset($_POST['member']) && $_POST['member'] == '1' ? '1' : 0),
+                    'mug' => (isset($_POST['mug']) && $_POST['mug'] == '1' ? '1' : 0),
+                    'payment_registered' => 0
+                )),
+            );
+        $registration_id = Data\Database::create($request, false);
+        if (is_numeric($registration_id))
+        {
+            // TODO: Send email to admin?
+            View\Alerts::set('success', 'Dina anmälan har registrerats.');
+        }
+        else if (is_array($registration_id) && $registration_id[1] === 1062)
+        {
+            // TODO: Send email to admin?
+            View\Alerts::set('warning', 'Din anmälan har redan registrerats. Vänligen kontakta oss om detta är ett fel.');
+        }
+        else
+        {
+            View\Alerts::set('info', 'Dina anmälan kunde inte registreras. Försök igen senare eller kontakta oss.');
+        }
     }
 
 }

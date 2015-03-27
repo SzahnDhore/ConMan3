@@ -78,5 +78,25 @@ class User
         $user_data = Data\Database::read($users_request, false);
         return $user_data[0]['users_id'];
     }
+    
+    /**
+     *Returns registration data for a specific user
+     */
+    public static function getConventionRegistrationData($user = false)
+    {
+        if ($user === false || !is_numeric($user)) {
+            return false;
+        } else {
+            $users_request = array(
+                'table' => 'convention_registrations',
+                'limit' => 1,
+                'where' => array(
+                    'col' => 'users_id',
+                    'values' => $user,
+                ),
+            );
+            return Data\Database::read($users_request, false);
+        }
+    }
 
 }

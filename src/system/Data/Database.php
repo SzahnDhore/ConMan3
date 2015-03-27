@@ -94,6 +94,8 @@ class Database
                     $out = $con->lastInsertId();
                 } catch(PDOException $error) {
                     $out = $error->getMessage();
+                } catch(\Exception $error) {
+                    $out = $error->errorInfo;
                 }
             }
 

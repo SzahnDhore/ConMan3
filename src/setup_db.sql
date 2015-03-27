@@ -135,3 +135,16 @@ CREATE TABLE IF NOT EXISTS `szcm3_user_social` (
   PRIMARY KEY (`user_social_id`),
   UNIQUE KEY `user_details_id` (`user_social_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `szcm3_convention_registrations` (
+  `convention_registrations_id` int(15) unsigned NOT NULL AUTO_INCREMENT,
+  `date_created` datetime NOT NULL,
+  `date_updated` datetime NOT NULL,
+  `users_id` int(15) NOT NULL,
+  `entrance_type` int(15) NOT NULL,
+  `member` int(11) NOT NULL DEFAULT '0',
+  `mug` int(11) NOT NULL DEFAULT '0',
+  `payment_registered` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`convention_registrations_id`),
+  UNIQUE KEY `users_id` (`users_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

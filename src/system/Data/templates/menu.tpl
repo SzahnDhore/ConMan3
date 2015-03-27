@@ -22,6 +22,15 @@
                         </li>
 {% endif %}
                         <li>
+                            <a href="{{ base_url }}index.php?page=anmalningar">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-gamepad fa-stack-1x fa-dark"></i>
+                                </span>
+                                <span class="hidden-sm"> Anmälan WSK 2015</span>
+                            </a>
+                        </li>
+                        <li>
                             <a href="{{ base_url }}index.php?page=arrangemang">
                                 <span class="fa-stack fa-lg">
                                     <i class="fa fa-circle fa-stack-2x"></i>
