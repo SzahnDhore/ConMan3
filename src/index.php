@@ -32,6 +32,7 @@ error_reporting(-1);
 /**
  * System wide settings should be loaded as soon as possible.
  */
+if (!file_exists('system/Data/Settings.php')) { copy('system/Data/Settings_template.php', 'system/Data/Settings.php'); }
 require_once 'system/Data/Settings.php';
 
 /**
