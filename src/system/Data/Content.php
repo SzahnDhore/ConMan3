@@ -38,5 +38,46 @@ class Content
         $out = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template . '.tpl');
         return $out;
     }
+    
+    public static function getEntranceContentForRegistrationPage()
+    {
+        // Since the Database class does not support joins and advanced queries, we have
+        // to make multiple calls to the database...
+        $this_registration_period_request = array(
+            'table' => 'convention_registration_periods',
+            'select' => 'convention_registration_periods_id',
+            'limit' => 1,
+            'where' => array(
+                'col' => 'last_registration_date',
+                'query' => 'between',
+                'values' => array(
+                    date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+1 year'))
+                ),
+            ),
+            'orderby' => 'last_registration_date'
+        );
+        $registration_form_id = Data\Database::read($this_registration_period_request, false);
+        if (empty($registration_form_id)) { return ''; }
+
+        $this_registration_form_request = array(
+            'table' => 'convention_registration_form',
+            'where' => array(
+                'col' => 'belongs_to_registration_period',
+                'values' => $registration_form_id[0]['convention_registration_periods_id'],
+            )
+        );
+        $result = Data\Database::read($this_registration_form_request, false);
+        
+        $out = array();
+        foreach ($result as $entrance_type)
+        {
+            $out[] = '[\'' . $entrance_type['convention_registration_form_id'] . '\', '
+                        . '\'' . $entrance_type['description'] . '\', '
+                        . $entrance_type['if_member_price_reduced_by'] . ', '
+                        . $entrance_type['price'] . ']';
+        }
+
+        return $out;
+    }
 
 }

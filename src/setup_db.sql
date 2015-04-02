@@ -148,3 +148,51 @@ CREATE TABLE IF NOT EXISTS `szcm3_convention_registrations` (
   PRIMARY KEY (`convention_registrations_id`),
   UNIQUE KEY `users_id` (`users_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `szcm3_convention_registration_form` (
+  `convention_registration_form_id` int(15) unsigned NOT NULL AUTO_INCREMENT,
+  `date_created` datetime NOT NULL,
+  `date_updated` datetime NOT NULL,
+  `belongs_to_registration_period` int(15) NOT NULL DEFAULT '0',
+  `description` varchar(255) NOT NULL,
+  `if_member_price_reduced_by` int(15) NOT NULL DEFAULT '0',
+  `price` int(15) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`convention_registration_form_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `szcm3_convention_registration_periods` (
+  `convention_registration_periods_id` int(15) unsigned NOT NULL AUTO_INCREMENT,
+  `date_created` datetime NOT NULL,
+  `date_updated` datetime NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `last_registration_date` datetime NOT NULL,
+  PRIMARY KEY (`convention_registration_periods_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+/*
+ * Basic setup for a convention with preregistrations...
+ */
+
+INSERT INTO `szcm3_convention_registration_periods`(`convention_registration_periods_id`, `date_created`, `date_updated`, `description`, `last_registration_date`) VALUES (1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'Föranmälan slutar', '2015-06-01 12:00:00');
+
+INSERT INTO `szcm3_convention_registration_periods`(`convention_registration_periods_id`, `date_created`, `date_updated`, `description`, `last_registration_date`) VALUES (2,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'Konventet slutar', '2015-07-05 23:59:59');
+ 
+INSERT INTO `szcm3_convention_registration_form`(`date_created`, `date_updated`, `belongs_to_registration_period`, `description`, `if_member_price_reduced_by`, `price`) VALUES (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,'Inträde WSK 2015, hela konventet',-150,300);
+
+INSERT INTO `szcm3_convention_registration_form`(`date_created`, `date_updated`, `belongs_to_registration_period`, `description`, `if_member_price_reduced_by`, `price`) VALUES (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,'Inträde WSK 2015, fredag',-150,150);
+
+INSERT INTO `szcm3_convention_registration_form`(`date_created`, `date_updated`, `belongs_to_registration_period`, `description`, `if_member_price_reduced_by`, `price`) VALUES (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,'Inträde WSK 2015, lördag',-150,200);
+
+INSERT INTO `szcm3_convention_registration_form`(`date_created`, `date_updated`, `belongs_to_registration_period`, `description`, `if_member_price_reduced_by`, `price`) VALUES (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,'Inträde WSK 2015, söndag',-150,150);
+
+INSERT INTO `szcm3_convention_registration_form`(`date_created`, `date_updated`, `belongs_to_registration_period`, `description`, `if_member_price_reduced_by`, `price`) VALUES (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,'Inget inträde, jag vill bara stöja föreningen och/eller är under 13 år',0,0);
+
+INSERT INTO `szcm3_convention_registration_form`(`date_created`, `date_updated`, `belongs_to_registration_period`, `description`, `if_member_price_reduced_by`, `price`) VALUES (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,2,'Inträde WSK 2015, hela konventet',-150,300);
+
+INSERT INTO `szcm3_convention_registration_form`(`date_created`, `date_updated`, `belongs_to_registration_period`, `description`, `if_member_price_reduced_by`, `price`) VALUES (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,2,'Inträde WSK 2015, fredag',-150,150);
+
+INSERT INTO `szcm3_convention_registration_form`(`date_created`, `date_updated`, `belongs_to_registration_period`, `description`, `if_member_price_reduced_by`, `price`) VALUES (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,2,'Inträde WSK 2015, lördag',-150,200);
+
+INSERT INTO `szcm3_convention_registration_form`(`date_created`, `date_updated`, `belongs_to_registration_period`, `description`, `if_member_price_reduced_by`, `price`) VALUES (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,2,'Inträde WSK 2015, söndag',-150,150);
+
+INSERT INTO `szcm3_convention_registration_form`(`date_created`, `date_updated`, `belongs_to_registration_period`, `description`, `if_member_price_reduced_by`, `price`) VALUES (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,2,'Inget inträde, jag vill bara stöja föreningen och/eller är under 13 år',0,0);

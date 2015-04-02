@@ -15,6 +15,8 @@ use \Szandor\ConMan\View as View;
 $user_info = $_SESSION['user']['info'];
 $registration_data = Data\User::getConventionRegistrationData($_SESSION['user']['info']['data']['id']);
 
+$registration_content_array = Data\Content::getEntranceContentForRegistrationPage();
+
 /**
  * The following is simple contents.
  */
@@ -28,7 +30,13 @@ $contents['head_local'] = '<link href="//cdnjs.cloudflare.com/ajax/libs/x-editab
 <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>';
 $contents['content_top'] = '';
 
-$contents['content_main'] = '
+$contents['content_main'] = (empty($registration_content_array) ?
+'<div class="row">
+    <div class="col-xs-12">
+        <h1 style="text-align: center;">Anmälan stängd</h1>
+        <p class="lead" style="text-align: center;">Anmälan till nästa WSK är ännu inte öppen.</p>
+    </div>
+</div>' : '
 <div class="row">
     <div class="col-xs-12">
         <h1>Din anmälan till konventet</h1>
@@ -54,7 +62,7 @@ $contents['content_main'] = '
                     <div class="checkbox">
                         <label>
                             <input type="checkbox" name="mug" value="1" id="registration_mug">
-                            Jag vill köpa åretskonventsmugg - 50kr
+                            Jag vill köpa årets konventsmugg - 50kr
                         </label>
                     </div>
                 </dl>
@@ -106,9 +114,9 @@ $contents['content_main'] = '
         <h3>Jag betalade i förväg. Får jag rabatt då?</h3>
             <p>Det kommer att finnas ett rabattsystem för de som betalar in hela summan i förväg. Vilka datum som gäller kommer att dyka upp när de är beslutade. När vi kontrollerar betalningsdatumen så är det bankens registreringsdatum av betalningen som gäller och inget annat.</p>
     </div>
-</div>';
+</div>');
 
-$contents['content_bottom'] = '
+$contents['content_bottom'] = (empty($registration_content_array) ? '' : '
 <script>
     $(document).ready(function() {
         var member = true;
@@ -117,16 +125,12 @@ $contents['content_bottom'] = '
 
         // pagesetup begin
         var registrationEntranceTypes = [
-            [\'Inträde WSK 2015, hela konventet\', 300],
-            [\'Inträde WSK 2015, fredag\', 150],
-            [\'Inträde WSK 2015, lördag\', 200],
-            [\'Inträde WSK 2015, söndag\', 150],
-            [\'Inget inträde, jag vill bara stöja föreningen och/eller är under 13 år\', 0]
+            ' . implode(',', $registration_content_array) . '
         ];
 
         var entrance = $("#registration_entrance");
         for (var i = 0; i < registrationEntranceTypes.length; i++) {
-            entrance.append("<div class=\"radio\"><label><input type=\"radio\" name=\"entrance_type\" id=\"entrance_type" +i.toString() +"\" value=\"" +i.toString() +"\">" +registrationEntranceTypes[i][0] +" - " +registrationEntranceTypes[i][1] +"kr</label></div>");
+            entrance.append("<div class=\"radio\"><label><input type=\"radio\" name=\"entrance_type\" id=\"entrance_type" +i.toString() +"\" value=\"" +registrationEntranceTypes[i][0] +"\">" +registrationEntranceTypes[i][1] +" - " +registrationEntranceTypes[i][3] +"kr</label></div>");
         }
         $(\'#entrance_type0\').prop(\'checked\', true);
         $(\'#registration_member\').prop(\'checked\', true);
@@ -149,16 +153,21 @@ $contents['content_bottom'] = '
         function updateTable() {
             $("#registration_details").empty();
             sum = 0;
-            var entranceIndex = $("#registration_entrance input[type=\'radio\']:checked").val();
-            addItemToRegistrationSum(registrationEntranceTypes[entranceIndex][0], registrationEntranceTypes[entranceIndex][1]);
+            var entranceIndex = $("#registration_entrance input[type=\'radio\']:checked").prop(\'id\').replace("entrance_type", "");
+            addItemToRegistrationSum(registrationEntranceTypes[entranceIndex][1], registrationEntranceTypes[entranceIndex][3]);
             if (member) {
                 addItemToRegistrationSum("Medlemsavgift", 100);
-                if (entranceIndex < 4) {
-                    addItemToRegistrationSum("Medlemsrabatt - inträde", -150);
+                if (registrationEntranceTypes[entranceIndex][2] < 0) {
+                    addItemToRegistrationSum("Medlemsrabatt - inträde", registrationEntranceTypes[entranceIndex][2]);
                 }
             }
-            if (mug) { addItemToRegistrationSum("Mugg", 50); }
+            if (mug) { addItemToRegistrationSum("Mugg", 70); }
             $("#registration_sum").html(sum.toString() +" kr");
+            if (sum == 0) {
+                $("#form_register_convention_submit").attr("disabled", "disabled");
+            } else {
+                $("#form_register_convention_submit").attr("disabled", false);
+            }
         }
 
         function addItemToRegistrationSum(description, price) {
@@ -168,4 +177,4 @@ $contents['content_bottom'] = '
 
         updateTable();
     });
-</script>';
+</script>');
