@@ -650,12 +650,12 @@ class Dostuff
         $registration_id = Data\Database::create($request, false);
         if (is_numeric($registration_id))
         {
-            // TODO: Send email to admin?
+            Data\MailSender::notifyAdmin("Ny föranmälan", "En ny föranmälan har skapats.");
             View\Alerts::set('success', 'Dina anmälan har registrerats.');
         }
         else if (is_array($registration_id) && $registration_id[1] === 1062)
         {
-            // TODO: Send email to admin?
+            Data\MailSender::notifyAdmin("Problem med föranmälan", "Ett försök att skapa en föranmälan har misslyckats. En föranmälan har redan gjorts för users_id: " .$_SESSION['user']['info']['data']['id']);
             View\Alerts::set('warning', 'Din anmälan har redan registrerats. Vänligen kontakta oss om detta är ett fel.');
         }
         else

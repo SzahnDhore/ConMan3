@@ -89,4 +89,52 @@ class Settings
         return ($requested == '' ? $settings : (array_key_exists($requested, $settings) ? $settings[$requested] : false));
     }
 
+    /**
+     * All settings related to the mailsender.
+     *
+     * @param string $setting Name of the setting you want to return.
+     * @return string Returns the specified setting value or, if this fails, false.
+     */
+    public static function mailsender($requested = '')
+    {
+        // --- If the server is on a specific host, these settings are used....
+        if ($_SERVER['HTTP_HOST'] == 'host_address') {
+
+            // --- Hostname of the SMTP server.
+            $settings['host'] = 'host';
+
+            // --- SMTP port.
+            $settings['port'] = 'port';
+
+            // --- Username for the SMTP server.
+            $settings['username'] = 'username';
+
+            // --- Password for the SMTP server.
+            $settings['password'] = 'password';
+
+            // --- The sender email address.
+            $settings['from_address'] = 'sender';
+
+            // --- The sender name.
+            $settings['from_name'] = 'name';
+
+            // --- The email to admin.
+            $settings['admin_address'] = 'admin@localhost.com';
+            
+            // --- If not, we assume that localhost is used.
+        } else {
+
+            $settings['host'] = '';
+            $settings['port'] = '';
+            $settings['username'] = '';
+            $settings['password'] = '';
+            $settings['from_address'] = '';
+            $settings['from_name'] = '';
+            $settings['admin_address'] = '';
+
+        }
+
+        return ($requested == '' ? $settings : (array_key_exists($requested, $settings) ? $settings[$requested] : false));
+    }
+
 }
