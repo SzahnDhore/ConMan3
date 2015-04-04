@@ -23,7 +23,7 @@ $registration_content_array = Data\Content::getEntranceContentForRegistrationPag
 $contents['page_id'] = 'anmalningar';
 $contents['date_created'] = '2014-11-15 20:53:18';
 $contents['date_changed'] = gmdate("Y-m-d H:i:s", filemtime(__FILE__));
-$contents['required_clearance'] = '2';
+$contents['required_clearance'] = 'regular user';
 $contents['name'] = 'Din anmälan';
 $contents['title'] = 'Din anmälan';
 $contents['head_local'] = '<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
@@ -62,7 +62,7 @@ $contents['content_main'] = (empty($registration_content_array) ?
                     <div class="checkbox">
                         <label>
                             <input type="checkbox" name="mug" value="1" id="registration_mug">
-                            Jag vill köpa årets konventsmugg - 50kr
+                            Jag vill köpa årets konventsmugg - 70kr
                         </label>
                     </div>
                 </dl>
@@ -163,11 +163,12 @@ $contents['content_bottom'] = (empty($registration_content_array) ? '' : '
             }
             if (mug) { addItemToRegistrationSum("Mugg", 70); }
             $("#registration_sum").html(sum.toString() +" kr");
+            ' . (empty($registration_data) ? '
             if (sum == 0) {
                 $("#form_register_convention_submit").attr("disabled", "disabled");
             } else {
                 $("#form_register_convention_submit").attr("disabled", false);
-            }
+            }' : '' ) . '
         }
 
         function addItemToRegistrationSum(description, price) {

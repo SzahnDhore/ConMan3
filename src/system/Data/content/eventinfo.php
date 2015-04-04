@@ -9,7 +9,6 @@ use \Szandor\ConMan\View as View;
 /**
  * We can do stuff here.
  */
-$role = Data\Role::getRolePermissions($_SESSION['user']['info']['data']['account_type']);
 $event_id = (isset($_GET['event_id']) ? ($_GET['event_id'] * 1) : false);
 
 if ($event_id === false) {
@@ -29,7 +28,7 @@ if ($event_id === false) {
 $contents['page_id'] = 'eventinfo';
 $contents['date_created'] = $event_info['date_created'];
 $contents['date_changed'] = $event_info['date_updated'];
-$contents['required_clearance'] = '2';
+$contents['required_clearance'] = 'regular user';
 $contents['name'] = '';
 $contents['title'] = $event_info['title'];
 
@@ -57,7 +56,7 @@ if ($event_info !== false) {
                     <div class="col-xs-12">
                         <div class="alert alert-warning" role="alert">
                             <p><strong>OBS!</strong> Det här evene&shy;manget väntar fort&shy;farande på god&shy;kän&shy;nande.</p>
-                        </div>' . ($role->hasPermission(Data\Role::PERM_DELETE_AND_CONFIRM_EVENTS) ? '
+                        </div>' . (in_array('PERM_DELETE_AND_CONFIRM_EVENTS', $_SESSION['user']['info']['permissions'], true) ? '
                         <div class="row">
                             <div class="col-xs-5 col-sm-12 col-lg-6">
                                 <button type="button" class="btn btn-danger btn-block" style="margin-bottom:5px" id="event_status_tabort" data-toggle="modal" data-target="#event_status_confirm_tabort"><span class="fa fa-exclamation-triangle"></span> Ta bort</button>
@@ -66,7 +65,7 @@ if ($event_info !== false) {
                                 <button type="submit" class="btn btn-success btn-block" style="margin-bottom:5px" id="event_status_godkann" name="submit_dostuff" value="event_status_godkann"><span class="fa fa-check-square-o"></span> God&shy;känn</button>
                             </div>
                         </div>' : '') . '
-                    </div>' : ($role->hasPermission(Data\Role::PERM_WITHDRAW_CONFIRMED_EVENTS) ? '
+                    </div>' : (in_array('PERM_WITHDRAW_CONFIRMED_EVENTS', $_SESSION['user']['info']['permissions'], true) ? '
                     <div class="col-xs-12">
                         <button type="submit" class="btn btn-warning btn-block" id="event_status_ej_godkann" name="submit_dostuff" value="event_status_ej_godkann"><span class="fa fa-times"></span> Dra tillbaka<span class="hidden-sm hidden-md"> godkännande</span></button>
                     </div>' : '')) . '
@@ -86,7 +85,7 @@ if ($event_info !== false) {
                         <dd>' . ($event_info['pre_registration'] == '1' ? 'Ja' : 'Nej') . '</dd>
                     </dl>
                 </div>
-            </div>' . ($role->hasPermission(Data\Role::PERM_EDIT_ALL_EVENTS) || $event_info['contact'] === $_SESSION['user']['info']['data']['id'] ? '
+            </div>' . (in_array('PERM_EDIT_ALL_EVENTS', $_SESSION['user']['info']['permissions'], true) || $event_info['contact'] === $_SESSION['user']['info']['data']['id'] ? '
             <div class="row">
                 <div class="col-xs-12">
                     <a class="btn btn-primary btn-block" style="margin-bottom:5px" id="event_edit_submit" name="submit_dostuff" value="event_edit_submit" href="' . Data\Settings::main('base_url') . 'index.php?page=eventedit&event_id=' . $event_id . '"><span class="fa fa-edit"></span> Ändra arrangemanget</a>
@@ -95,7 +94,7 @@ if ($event_info !== false) {
         </div>
         <div class="col-xs-12">
             <h2>Speltillfällen</h2>
-' . $event->getEventSchedule($event_id) . ($role->hasPermission(Data\Role::PERM_ADD_EVENT_TO_SCHEDULE) ? '
+' . $event->getEventSchedule($event_id) . (in_array('PERM_ADD_EVENT_TO_SCHEDULE', $_SESSION['user']['info']['permissions'], true) ? '
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#event_add_occassion"><span class="fa fa-plus"></span> Lägg till spel&shy;till&shy;fälle</button>' : '') . '
         </div>
     </div>

@@ -7,14 +7,12 @@ use \Szandor\ConMan\Logic as Logic;
 use \Szandor\ConMan\View as View;
 
 $file_changed = gmdate("Y-m-d H:i:s", filemtime(__FILE__));
-$role = Data\Role::getRolePermissions($_SESSION['user']['info']['data']['account_type']);
-
 $event_class = new Data\Event;
 $all_events_raw = $event_class->getAllEvents();
 
 $all_events = [];
 foreach ($all_events_raw as $key => $event) {
-    if ($event['approved'] == '1' || $role->hasPermission(Data\Role::PERM_VIEW_ALL_EVENTS) || $event['contact'] == $_SESSION['user']['info']['data']['id']) {
+    if ($event['approved'] == '1' || in_array('PERM_VIEW_ALL_EVENTS', $_SESSION['user']['info']['permissions'], true) || $event['contact'] == $_SESSION['user']['info']['data']['id']) {
         $all_events[$event['event_type_order']][] = $event;
     }
     // $all_events[$event['event_type_order']][] = $event;
@@ -98,7 +96,7 @@ foreach ($all_events as $category => $category_events) {
 $contents['page_id'] = 'anmalningar';
 $contents['date_created'] = '2014-11-15 20:53:18';
 $contents['date_changed'] = $file_changed;
-$contents['required_clearance'] = '2';
+$contents['required_clearance'] = 'regular user';
 $contents['name'] = 'Dina anmälningar';
 $contents['title'] = 'Dina anmälningar';
 $contents['head_local'] = '';

@@ -5,7 +5,7 @@ namespace Szandor\ConMan;
 $contents['page_id'] = 1;
 $contents['date_created'] = '2014-11-15 20:53:18';
 $contents['date_changed'] = gmdate("Y-m-d H:i:s", filemtime(__FILE__));
-$contents['required_clearance'] = '1';
+$contents['required_clearance'] = 'guest';
 $contents['name'] = 'Framsida';
 $contents['title'] = 'Välkommen till systemet!';
 $contents['head_local'] = '';

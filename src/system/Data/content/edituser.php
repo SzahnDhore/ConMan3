@@ -16,7 +16,7 @@ use \Szandor\ConMan\View as View;
 $contents['page_id'] = 'edituser';
 $contents['date_created'] = '2014-12-28 22:09:18';
 $contents['date_changed'] = gmdate("Y-m-d H:i:s", filemtime(__FILE__));
-$contents['required_clearance'] = '2';
+$contents['required_clearance'] = 'regular user';
 $contents['name'] = '';
 $contents['title'] = 'Ändra användare';
 $contents['head_local'] = '';

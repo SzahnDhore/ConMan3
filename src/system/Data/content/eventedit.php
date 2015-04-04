@@ -24,8 +24,7 @@ if (isset($_GET['event_id']) && is_numeric($_GET['event_id'])) {
 }
 
 if ($_GET['event_id'] !== 'new') {
-    $role = Data\Role::getRolePermissions($_SESSION['user']['info']['data']['account_type']);
-    if ($event_info['contact'] == $_SESSION['user']['info']['data']['id'] || $role->hasPermission(Data\Role::PERM_EDIT_ALL_EVENTS)) {
+    if ($event_info['contact'] == $_SESSION['user']['info']['data']['id'] || in_array('PERM_EDIT_ALL_EVENTS', $_SESSION['user']['info']['permissions'], true)) {
     } else {
         header('Location: ' . Data\Settings::main('base_url') . 'index.php?page=arrangemang');
         exit ;
@@ -38,7 +37,7 @@ if ($_GET['event_id'] !== 'new') {
 $contents['page_id'] = 'eventinfo';
 $contents['date_created'] = '2014-11-15 20:53:18';
 $contents['date_changed'] = gmdate("Y-m-d H:i:s", filemtime(__FILE__));
-$contents['required_clearance'] = '2';
+$contents['required_clearance'] = 'regular user';
 $contents['name'] = '';
 $contents['title'] = 'Skapa nytt arrangemang';
 $contents['head_local'] = '';

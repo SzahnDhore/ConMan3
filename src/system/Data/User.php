@@ -53,11 +53,51 @@ class User
                 unset($user_details[0]['male']);
 
                 $out['details'] = $user_details[0];
+                // fetching the groups and permisssions for the user
+                $groups_tmp = User::getGroupsForUser($user);
+                $groups = array();
+                $group_ids = array();
+                foreach ($groups_tmp as $key=>$group) {
+                    $groups[] = $group['description'];
+                    $group_ids[] = $group['user_groups_id'];
+                }
+                $out['groups']=$groups;
+                $permissions_tmp = User::getPermissionsForGroups($group_ids);
+                $permissions = array();
+                foreach ($permissions_tmp as $key=>$perm) { $permissions[] = $perm['description']; }
+                $out['permissions'] = $permissions;
 
                 return $out;
             } else {
                 return false;
             }
+        }
+    }
+    
+    /**
+     * Returns the user groups for a specified user.
+     */
+    public static function getGroupsForUser($user = false)
+    {
+    if ($user === false || !is_numeric($user)) {
+            return false;
+        } else {
+            $users_request = 'SELECT szcm3_user_groups.* FROM szcm3_user_and_group_connection LEFT JOIN szcm3_user_groups ON szcm3_user_and_group_connection.user_groups_id=szcm3_user_groups.user_groups_id WHERE users_id=?;';
+            return Data\Database::read_raw_sql($users_request, array($user));
+        }
+    }
+    
+    /**
+     * Returns the permissions for an array of groups.
+     */
+    public static function getPermissionsForGroups($group_ids = array())
+    {
+    if (empty($group_ids)) {
+            return false;
+        } else {
+            $q = substr_replace(str_repeat('?,',count($group_ids)), "", -1);
+            $users_request = 'SELECT szcm3_user_group_permissions.description FROM szcm3_user_group_and_group_permission_connection LEFT JOIN szcm3_user_group_permissions ON szcm3_user_group_and_group_permission_connection.user_group_permissions_id=szcm3_user_group_permissions.user_group_permissions_id WHERE szcm3_user_group_and_group_permission_connection.user_groups_id IN (' . $q . ');';
+            return Data\Database::read_raw_sql($users_request, $group_ids);
         }
     }
 

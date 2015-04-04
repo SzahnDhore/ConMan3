@@ -414,11 +414,25 @@ class Dostuff
                 'data' => array( array(
                         'username' => $_POST['new_user_username'],
                         'email' => $_POST['new_user_email'],
-                        'password' => $password->hashPass($_POST['new_user_password']),
-                        'account_type' => '2',
+                        'password' => $password->hashPass($_POST['new_user_password'])
                     )),
             );
             $user_id = Data\Database::create($create_user_request, false);
+            
+            $regular_user_group_id = Data\Database::read(array(
+                'table' => 'user_groups',
+                'select' => 'user_groups_id',
+                'limit' => 1,
+                'where' => array(
+                    'col' => 'description',
+                    'values' => 'regular user',
+                )), false);
+            Data\Database::create(array (
+                'table' => 'user_and_group_connection',
+                'data' => array(array(
+                    'users_id' => $user_id,
+                    'user_groups_id' => $regular_user_group_id[0]['user_groups_id']))
+            ), false);
 
             $create_details_request = array(
                 'table' => 'user_details',
@@ -542,11 +556,25 @@ class Dostuff
                 'table' => 'users',
                 'data' => array( array(
                         'username' => $user['username'],
-                        'email' => ($user['email'] == '' ? null : $user['email']),
-                        'account_type' => '2',
+                        'email' => ($user['email'] == '' ? null : $user['email'])
                     )),
             );
             $user['user_id'] = Data\Database::create($create_user_request, false);
+            
+            $regular_user_group_id = Data\Database::read(array(
+                'table' => 'user_groups',
+                'select' => 'user_groups_id',
+                'limit' => 1,
+                'where' => array(
+                    'col' => 'description',
+                    'values' => 'regular user',
+                )), false);
+            Data\Database::create(array (
+                'table' => 'user_and_group_connection',
+                'data' => array(array(
+                    'users_id' => $user['user_id'],
+                    'user_groups_id' => $regular_user_group_id[0]['user_groups_id']))
+            ), false);
 
             $create_details_request = array(
                 'table' => 'user_details',

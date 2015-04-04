@@ -20,7 +20,7 @@ $user_info = $_SESSION['user']['info'];
 $contents['page_id'] = 'anmalningar';
 $contents['date_created'] = '2014-11-15 20:53:18';
 $contents['date_changed'] = gmdate("Y-m-d H:i:s", filemtime(__FILE__));
-$contents['required_clearance'] = '2';
+$contents['required_clearance'] = 'regular user';
 $contents['name'] = 'Din anmälan';
 $contents['title'] = 'Din anmälan';
 $contents['head_local'] = '<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>

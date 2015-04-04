@@ -85,12 +85,13 @@ if ($html_content['page_id'] === Data\Settings::main('error_page')) {
  * default page if not logged in.
  */
 if ($userIsLoggedIn === false) {
-    $user_clearance = '1';
+    $user_clearance = array('guest');
 } else {
-    $user_clearance = $_SESSION['user']['info']['data']['account_type'];
+    $user_clearance = $_SESSION['user']['info']['groups'];
+    $user_clearance[] = 'guest';
 }
 
-if ($html_content['required_clearance'] > $user_clearance) {
+if (!in_array($html_content['required_clearance'], $user_clearance, true)) {
     header('Location: ' . Data\Settings::main('base_url'));
 }
 

@@ -218,6 +218,26 @@ class Database
         $con = null;
         return $out;
     }
+    
+    /**
+     * Executes a raw sql query in the database. Use with caution!
+     */
+    public static function read_raw_sql($raw_sql, $values)
+    {
+        $out = '';
+        $con = self::connect();
+        $stmt = $con->prepare($raw_sql);
+        try {
+            $stmt->execute($values);
+            $out = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+        } catch(PDOException $error) {
+            $out = $error->getMessage();
+        }
+
+        $con = null;
+        return $out;
+    }
 
     /**
      * Uppdaterar data.
