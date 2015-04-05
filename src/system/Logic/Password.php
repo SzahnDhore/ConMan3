@@ -45,8 +45,9 @@ class Password
                 if ($checks_out) {
                     // $_SESSION['user']['user_name'] = $user_name;
                     session_regenerate_id();
+                    
                     return $user_name;
-                }
+                } else { return false; }
             } else {
                 return false;
             }
