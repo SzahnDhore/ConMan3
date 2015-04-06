@@ -633,6 +633,8 @@ class Dostuff
             }
         }
         $userData['country'] = 'Sweden';
+        $userData['male'] = $userData['male'];
+        unset($userData['gender']);
         $stagedChanges = Data\User::getStagedChangesForUserId($userId);
         if (isset($stagedChanges['users_id']) && is_numeric($stagedChanges['users_id'])) {
             $userData['user_staged_changes_id'] = $stagedChanges['user_staged_changes_id'];
