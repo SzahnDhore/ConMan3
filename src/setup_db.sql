@@ -146,6 +146,27 @@ CREATE TABLE IF NOT EXISTS `szcm3_user_details` (
   UNIQUE KEY `national_id_number` (`national_id_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `szcm3_user_staged_changes` (
+  `user_staged_changes_id` int(15) unsigned NOT NULL AUTO_INCREMENT,
+  `date_created` datetime NOT NULL,
+  `date_updated` datetime NOT NULL,
+  `given_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `family_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `postal_code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `city` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `male` int(1) DEFAULT NULL,
+  `national_id_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `country` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `phone_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `users_id` int(15) NOT NULL,
+  PRIMARY KEY (`user_staged_changes_id`),
+  UNIQUE KEY `user_staged_changes_id` (`user_staged_changes_id`),
+  UNIQUE KEY `users_id` (`users_id`),
+  UNIQUE KEY `national_id_number` (`national_id_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS `szcm3_user_social` (
   `user_social_id` int(15) unsigned NOT NULL AUTO_INCREMENT,
   `date_created` datetime NOT NULL,

@@ -92,7 +92,9 @@ switch ($_POST['submit_dostuff']) {
         break;
 
     case 'update_profile' :
-        Dostuff::update_profile();
+        Dostuff::update_profile($_SESSION['user']['info']['data']['id'],
+                                $_SESSION['user']['info']['data']['username'],
+                                $_POST);
         $go_to_page = 'index.php?page=minprofil';
         break;
 
@@ -458,9 +460,11 @@ class Dostuff
         // --- To make it harder for evil people to crack the website the script pauses for a short time here.
         Logic\Throttle::request();
 
-        Data\Login::tryLogin($username, $password);
-
+        $login_was_a_success = Data\Login::tryLogin($username, $password);
         $go_to_page = $_POST['user_login_url'];
+        
+        if ($login_was_a_success && empty($go_to_page)) { $go_to_page = 'index.php?page=minprofil'; }
+        
         return $go_to_page;
     }
 
@@ -606,58 +610,45 @@ class Dostuff
         }
     }
 
-    public static function update_profile()
+    /**
+     * Returns true if any update was possible, false otherwise.
+     */
+    public static function update_profile($currentUserId, $currentUsername, $POST_DATA)
     {
-        $user_email_request = array(
-            'table' => 'users',
-            'limit' => 1,
-            'where' => array(
-                'col' => 'email',
-                'values' => $_POST['form_profile_email'],
-            ),
-        );
-        $user_email = Data\Database::read($user_email_request, false);
-
-        if (isset($user_email[0]) && $_POST['form_profile_email'] !== $_SESSION['user']['info']['data']['email']) {
-            View\Alerts::set('warning', 'Den här epostadressen är redan upptagen.');
-        } else {
-            $update_email_request = array(
-                'table' => 'users',
-                'id' => $_SESSION['user']['info']['data']['id'],
-                'values' => array('email' => $_POST['form_profile_email'], ),
-            );
-            Data\Database::update($update_email_request, false);
-
-            // $user_id_request = array(
-            // 'table' => 'users',
-            // 'limit' => 1,
-            // 'where' => array(
-            // 'col' => 'email',
-            // 'values' => $_POST['form_profile_email'],
-            // ),
-            // );
-            // $user_email = Data\Database::read($user_email_request, false);
-
-            // --- TODO: Add code to find the correct ID for the user_details.
-
-            // $update_profile_request = array(
-            // 'table' => 'user_details',
-            // 'id' => $_SESSION['user']['info']['data']['id'],
-            // 'values' => array(
-            // 'given_name' => $_POST['form_profile_given_name'],
-            // 'family_name' => $_POST['form_profile_family_name'],
-            // 'address' => $_POST['form_profile_address'],
-            // 'postal_code' => $_POST['form_profile_postal_code'],
-            // 'city' => $_POST['form_profile_city'],
-            // 'male' => $_POST['form_profile_gender'],
-            // 'national_id_number' => $_POST['form_profile_national_id_number'],
-            // 'phone_number' => $_POST['form_profile_phone_number'],
-            // ),
-            // );
-            // Data\Database::update($update_profile_request, false);
+        if ($POST_DATA['form_profile_users_id'] != $currentUserId /*&& 
+        !in_array('PERM_UPDATE_OTHERS_PROFILE', $_SESSION['user']['info']['permissions'], true)*/) {
+            return false;
         }
+        $userId = Data\User::getUserIdByEmail($POST_DATA['form_profile_email'], true);
+        if (is_numeric($userId) && $userId != $currentUserId) {
+            View\Alerts::set('warning', 'Den här epostadressen är redan upptagen.');
+            return false;
+        }
+        // TODO: Add validation of the $POST_DATA here according to issue #1.
 
-        Data\Login::doLogin($_SESSION['user']['info']['data']['username']);
+        $userData = array();
+        foreach ($POST_DATA as $key=>$value) {
+            if (strpos($key, 'form_profile_') === 0) {
+                $userData[str_replace('form_profile_', '', $key)] = $POST_DATA[$key];
+            }
+        }
+        $userData['country'] = 'Sweden';
+        $stagedChanges = Data\User::getStagedChangesForUserId($userId);
+        if (isset($stagedChanges['users_id']) && is_numeric($stagedChanges['users_id'])) {
+            $userData['user_staged_changes_id'] = $stagedChanges['user_staged_changes_id'];
+            if (!Data\User::updateStagedDetailsForUser($userData)) {
+                View\Alerts::set('warning', 'Dina nya personuppgifter gick inte spara. Försök igen senare.');
+                return false;
+            }
+        } else {
+            if (!Data\User::stageNewDetailsForUser($userData)) {
+                View\Alerts::set('warning', 'Dina nya personuppgifter gick inte spara. Försök igen senare.');
+                return false;
+            }
+        }
+        Data\MailSender::notifyAdmin("Användarinformation har uppdaterats", "Det finns ny information om en användare som behöver granskas.");
+
+        Data\Login::doLogin($currentUsername);
         View\Alerts::set('success', 'Dina personuppgifter har sparats.');
 
         return true;

@@ -73,7 +73,7 @@ class User
             }
         }
     }
-    
+
     /**
      * Returns the user groups for a specified user.
      */
@@ -86,7 +86,7 @@ class User
             return Data\Database::read_raw_sql($users_request, array($user));
         }
     }
-    
+
     /**
      * Returns the permissions for an array of groups.
      */
@@ -118,7 +118,7 @@ class User
         $user_data = Data\Database::read($users_request, false);
         return $user_data[0]['users_id'];
     }
-    
+
     /**
      *Returns registration data for a specific user
      */
@@ -139,4 +139,112 @@ class User
         }
     }
 
+    /**
+     * Checks the users table first and then the staged table. Returns
+     * false if no user id was found.
+     */
+    public static function getUserIdByEmail($email, $includeStagedChanges = false)
+    {
+        if (empty($email)) {
+            return false;
+        } else {
+            $users_request = array(
+                'table' => 'users',
+                'limit' => 1,
+                'where' => array(
+                    'col' => 'email',
+                    'values' => $email,
+                ),
+            );
+            $result = Data\Database::read($users_request, false);
+            if (isset($result[0]['users_id'])) { return $result[0]['users_id']; }
+
+            if (!includeStagedChanges) { return false; }
+            $users_request = array(
+                'table' => 'users_staged_changes',
+                'limit' => 1,
+                'where' => array(
+                    'col' => 'email',
+                    'values' => $email,
+                ),
+            );
+            $result = Data\Database::read($users_request, false);
+            if (isset($result[0]['users_id'])) { return $result[0]['users_id']; }
+
+            return false;
+        }
+    }
+
+    /**
+     * Returns staged changes for a user. Returns false if no changes are staged.
+     */
+    public static function getStagedChangesForUserId($userId)
+    {
+        if ($userId === false || !is_numeric($userId)) {
+            return false;
+        } else {
+            $users_request = array(
+                'table' => 'user_staged_changes',
+                'limit' => 1,
+                'where' => array(
+                    'col' => 'users_id',
+                    'values' => $userId,
+                ),
+            );
+            $result = Data\Database::read($users_request, false);
+            if (isset($result[0]['users_id'])) { return $result[0]; }
+
+            return false;
+        }
+    }
+
+    /**
+     * Stages new details for a user. Returns true if ok, false if something fails.
+     */
+    public static function stageNewDetailsForUser($userData)
+    {
+        if (empty($userData)) {
+            return false;
+        } else {
+            $users_request = array(
+                'table' => 'user_staged_changes',
+                'data' => array($userData)
+            );
+            $result = Data\Database::create($users_request, false);
+            return is_numeric($result);
+        }
+    }
+    
+    /**
+     * Stages an update for the details for a user. Returns true if ok, false if something fails.
+     */
+    public static function updateStagedDetailsForUser($userData)
+    {
+        if (empty($userData)) {
+            return false;
+        } else {
+            $male = 1;
+            if (isset($userData['male'])) { $male = $userData['male']; }
+            if (isset($userData['gender'])) { $male = $userData['gender']; }
+            $users_request = array(
+                'table' => 'user_staged_changes',
+                'id' => $userData['user_staged_changes_id'],
+                'values' => array(
+                    'given_name' => $userData['given_name'],
+                    'family_name' => $userData['family_name'],
+                    'address' => $userData['address'],
+                    'postal_code' => $userData['postal_code'],
+                    'city' => $userData['city'],
+                    'male' => $male,
+                    'national_id_number' => $userData['national_id_number'],
+                    'country' => $userData['country'],
+                    'phone_number' => $userData['phone_number'],
+                    'email' => $userData['email'],
+                    'users_id' => $userData['users_id']
+                )
+            );
+            $result = Data\Database::update($users_request, false);
+            return $result;
+        }
+    }
 }
