@@ -1,3 +1,8 @@
+/*
+ * This script does a basic setup of the database for version 0.5. If you need to modify any
+ * table in newer releases, use altertable to modify the changes.
+ */
+
 CREATE TABLE IF NOT EXISTS `szcm3_data_throttling` (
   `data_throttling_id` int(15) unsigned NOT NULL AUTO_INCREMENT,
   `date_created` datetime NOT NULL,
@@ -85,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `szcm3_users` (
   `date_updated` datetime NOT NULL,
   `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
+  `password` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`users_id`),
   UNIQUE KEY `users_id` (`users_id`),
   UNIQUE KEY `username` (`username`),
@@ -94,16 +99,16 @@ CREATE TABLE IF NOT EXISTS `szcm3_users` (
 
 CREATE TABLE IF NOT EXISTS `szcm3_user_groups` (
   `user_groups_id` int(15) unsigned NOT NULL AUTO_INCREMENT,
-  `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `date_updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_created` datetime NOT NULL,
+  `date_updated` datetime NOT NULL,
   `description` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`user_groups_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `szcm3_user_and_group_connection` (
   `user_and_group_connection_id` int(15) unsigned NOT NULL AUTO_INCREMENT,
-  `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `date_updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_created` datetime NOT NULL,
+  `date_updated` datetime NOT NULL,
   `users_id` int(15) NOT NULL,
   `user_groups_id` int(15) NOT NULL,
   PRIMARY KEY (`user_and_group_connection_id`)
@@ -111,16 +116,16 @@ CREATE TABLE IF NOT EXISTS `szcm3_user_and_group_connection` (
 
 CREATE TABLE IF NOT EXISTS `szcm3_user_group_permissions` (
   `user_group_permissions_id` int(15) unsigned NOT NULL AUTO_INCREMENT,
-  `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `date_updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_created` datetime NOT NULL,
+  `date_updated` datetime NOT NULL,
   `description` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`user_group_permissions_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `szcm3_user_group_and_group_permission_connection` (
   `user_group_and_group_permission_connection_id` int(15) unsigned NOT NULL AUTO_INCREMENT,
-  `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `date_updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_created` datetime NOT NULL,
+  `date_updated` datetime NOT NULL,
   `user_groups_id` int(15) NOT NULL,
   `user_group_permissions_id` int(15) NOT NULL,
   PRIMARY KEY (`user_group_and_group_permission_connection_id`)
@@ -183,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `szcm3_convention_registrations` (
   `date_created` datetime NOT NULL,
   `date_updated` datetime NOT NULL,
   `users_id` int(15) NOT NULL,
-  `entrance_type` int(15) NOT NULL,
+  `convention_registration_form_id` int(15) NOT NULL,
   `member` int(11) NOT NULL DEFAULT '0',
   `mug` int(11) NOT NULL DEFAULT '0',
   `payment_registered` int(11) NOT NULL DEFAULT '0',
@@ -240,26 +245,26 @@ INSERT INTO `szcm3_convention_registration_form`(`date_created`, `date_updated`,
 INSERT INTO `szcm3_convention_registration_form`(`date_created`, `date_updated`, `belongs_to_registration_period`, `description`, `if_member_price_reduced_by`, `price`) VALUES (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,2,'Inget inträde, jag vill bara stöja föreningen och/eller är under 13 år',0,0);
 
 /* Usergroups */
-INSERT INTO `szcm3_user_groups`(`user_groups_id`, `description`) VALUES (1,'regular user');
-INSERT INTO `szcm3_user_groups`(`user_groups_id`, `description`) VALUES (2,'stab');
-INSERT INTO `szcm3_user_groups`(`user_groups_id`, `description`) VALUES (3,'admin');
-INSERT INTO `szcm3_user_groups`(`user_groups_id`, `description`) VALUES (4,'economist');
+INSERT INTO `szcm3_user_groups`(`user_groups_id`, `date_created`, `date_updated`, `description`) VALUES (1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'regular user');
+INSERT INTO `szcm3_user_groups`(`user_groups_id`, `date_created`, `date_updated`, `description`) VALUES (2,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'stab');
+INSERT INTO `szcm3_user_groups`(`user_groups_id`, `date_created`, `date_updated`, `description`) VALUES (3,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'admin');
+INSERT INTO `szcm3_user_groups`(`user_groups_id`, `date_created`, `date_updated`, `description`) VALUES (4,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'economist');
 
 /* permissions */
-INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `description`) VALUES (1,'PERM_VIEW_ALL_EVENTS');
-INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `description`) VALUES (2,'PERM_CREATE_NEW_EVENTS');
-INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `description`) VALUES (3,'PERM_EDIT_ALL_EVENTS');
-INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `description`) VALUES (4,'PERM_WITHDRAW_CONFIRMED_EVENTS');
-INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `description`) VALUES (5,'PERM_DELETE_AND_CONFIRM_EVENTS');
-INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `description`) VALUES (6,'PERM_ADD_EVENT_TO_SCHEDULE');
-INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `description`) VALUES (7,'PERM_COMFIRM_NEW_USER_DETAILS');
-INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `description`) VALUES (8,'PERM_COMFIRM_USER_PAYMENTS');
+INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `date_created`, `date_updated`, `description`) VALUES (1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'PERM_VIEW_ALL_EVENTS');
+INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `date_created`, `date_updated`, `description`) VALUES (2,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'PERM_CREATE_NEW_EVENTS');
+INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `date_created`, `date_updated`, `description`) VALUES (3,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'PERM_EDIT_ALL_EVENTS');
+INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `date_created`, `date_updated`, `description`) VALUES (4,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'PERM_WITHDRAW_CONFIRMED_EVENTS');
+INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `date_created`, `date_updated`, `description`) VALUES (5,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'PERM_DELETE_AND_CONFIRM_EVENTS');
+INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `date_created`, `date_updated`, `description`) VALUES (6,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'PERM_ADD_EVENT_TO_SCHEDULE');
+INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `date_created`, `date_updated`, `description`) VALUES (7,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'PERM_COMFIRM_NEW_USER_DETAILS');
+INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `date_created`, `date_updated`, `description`) VALUES (8,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'PERM_COMFIRM_USER_PAYMENTS');
 
-INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `user_group_permissions_id`) VALUES (2,1);
-INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `user_group_permissions_id`) VALUES (2,2);
-INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `user_group_permissions_id`) VALUES (2,3);
-INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `user_group_permissions_id`) VALUES (2,4);
-INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `user_group_permissions_id`) VALUES (2,5);
-INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `user_group_permissions_id`) VALUES (2,6);
-INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `user_group_permissions_id`) VALUES (3,7);
-INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `user_group_permissions_id`) VALUES (4,8);
+INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (2,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1);
+INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (2,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,2);
+INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (2,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,3);
+INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (2,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,4);
+INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (2,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,5);
+INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (2,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,6);
+INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (3,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,7);
+INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (4,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,8);
