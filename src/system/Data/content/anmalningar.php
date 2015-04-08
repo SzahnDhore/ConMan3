@@ -14,7 +14,6 @@ use \Szandor\ConMan\View as View;
 
 $user_info = $_SESSION['user']['info'];
 $registration_data = Data\User::getConventionRegistrationData($_SESSION['user']['info']['data']['id']);
-
 $registration_content_array = Data\Content::getEntranceContentForRegistrationPage();
 
 /**
@@ -119,8 +118,8 @@ $contents['content_main'] = (empty($registration_content_array) ?
 $contents['content_bottom'] = (empty($registration_content_array) ? '' : '
 <script>
     $(document).ready(function() {
-        var member = true;
-        var mug = false;
+        var member = ' . (!isset($registration_data[0]['member']) || $registration_data[0]['member'] == '1' ? 'true' : 'false') . ';
+        var mug = ' . (isset($registration_data[0]['mug']) && $registration_data[0]['mug'] == '1' ? 'true' : 'false') . ';
         var sum = 0;
 
         // pagesetup begin
@@ -132,8 +131,9 @@ $contents['content_bottom'] = (empty($registration_content_array) ? '' : '
         for (var i = 0; i < registrationEntranceTypes.length; i++) {
             entrance.append("<div class=\"radio\"><label><input type=\"radio\" name=\"entrance_type\" id=\"entrance_type" +i.toString() +"\" value=\"" +registrationEntranceTypes[i][0] +"\">" +registrationEntranceTypes[i][1] +" - " +registrationEntranceTypes[i][3] +"kr</label></div>");
         }
-        $(\'#entrance_type0\').prop(\'checked\', true);
-        $(\'#registration_member\').prop(\'checked\', true);
+        ' . (isset($registration_data[0]['convention_registration_form_id']) ? '$("input[name=entrance_type][value=' . $registration_data[0]['convention_registration_form_id'] . ']").prop(\'checked\', true);' : '$(\'#entrance_type0\').prop(\'checked\', true);' ) . '
+        if (member) { $(\'#registration_member\').prop(\'checked\', true); }
+        if (mug) { $(\'#registration_mug\').prop(\'checked\', true); }
 
         // pagesetup ends
         $("#registration_entrance").change(function() {

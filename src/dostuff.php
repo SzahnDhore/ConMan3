@@ -662,7 +662,7 @@ class Dostuff
             'table' => 'convention_registrations',
             'data' => array( array(
                     'users_id' => $_SESSION['user']['info']['data']['id'],
-                    'entrance_type' => $_POST['entrance_type'],
+                    'convention_registration_form_id' => $_POST['entrance_type'],
                     'member' => (isset($_POST['member']) && $_POST['member'] == '1' ? '1' : 0),
                     'mug' => (isset($_POST['mug']) && $_POST['mug'] == '1' ? '1' : 0),
                     'payment_registered' => 0
