@@ -105,6 +105,9 @@ $contents['content_main'] = (empty($registration_content_array) ?
 <div class="row">
     <div class="col-xs-12">
         <h2>FAQ</h2>
+        <h3>Betalning</h3>
+            <p>Förbetalning sker till vårt plusgirokonto: 165 79 33-6</p>
+            <p>Glöm inte att du måste ange ditt personnummer (inte bara födelsedatumet) i meddelandefältet! Gör du inte det kan vi inte hitta din betalning och du måste betala inträde igen för att få komma in.</p>
         <h3>Jag skrev inte mitt personnummer på inbetalningen</h3>
             <p>Då vet vi inte vilken inbetalning som är din och kan inte registrera dig som betald. Tack för din donation till föreningen!</p>
             <p>Skämt åsido så kan vi försöka spåra betalningen så du får tillbaka dina pengar, men vi kan inte lova att vi hittar den och det kan ta lite tid att lösa. Hör av dig i god tid innan konventet drar igång om du skulle komma på att det här har hänt. Om det inte blir löst innan dess får du vara beredd på att betala dubbelt tills dess att vi hunnit sätta tillbaka pengarna.</p>

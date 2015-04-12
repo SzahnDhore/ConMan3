@@ -672,7 +672,7 @@ class Dostuff
         if (is_numeric($registration_id))
         {
             Data\MailSender::notifyAdmin("Ny föranmälan", "En ny föranmälan har skapats.");
-            View\Alerts::set('success', 'Dina anmälan har registrerats.');
+            View\Alerts::set('success', 'Dina anmälan har registrerats. Se FAQ nedan för hur du betalar.');
         }
         else if (is_array($registration_id) && $registration_id[1] === 1062)
         {
