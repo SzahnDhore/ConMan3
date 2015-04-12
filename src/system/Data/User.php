@@ -8,6 +8,10 @@ use \Szandor\ConMan\View as View;
 
 /**
  * Fetches and returns specified user data.
+ * Note: This class will undergo a major refactoring in the future.
+ *       The class will be a simple entity class with the ability to validate
+ *       properties. All communication with the database will be moved to a
+ *       class implementing a IUserRepository-interface.
  */
 class User
 {
@@ -159,9 +163,9 @@ class User
             $result = Data\Database::read($users_request, false);
             if (isset($result[0]['users_id'])) { return $result[0]['users_id']; }
 
-            if (!includeStagedChanges) { return false; }
+            if (!$includeStagedChanges) { return false; }
             $users_request = array(
-                'table' => 'users_staged_changes',
+                'table' => 'user_staged_changes',
                 'limit' => 1,
                 'where' => array(
                     'col' => 'email',
@@ -246,5 +250,27 @@ class User
             $result = Data\Database::update($users_request, false);
             return $result;
         }
+    }
+
+    /**
+     * functions below should stay in this class..
+     */
+    public static function isValidEmail($email) {
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+    }
+
+    /**
+     * Syntax: YYYYMMDDNNNN
+     * TODO: Add validation for the checksum.
+     */
+    public static function isValidNationalIdNumber($national_id_number) {
+        $valid = true;
+        $valid = ($valid && strlen($national_id_number) == 12) ? true : false;
+        $valid = ($valid && self::isValidDate(substr($national_id_number, 0, 8))) ? true : false;
+        return $valid;
+    }
+
+    private static function isValidDate($date) {
+        return $date == date('Ymd', strtotime($date));
     }
 }

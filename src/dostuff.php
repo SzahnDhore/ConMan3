@@ -92,10 +92,9 @@ switch ($_POST['submit_dostuff']) {
         break;
 
     case 'update_profile' :
-        Dostuff::update_profile($_SESSION['user']['info']['data']['id'],
+        $go_to_page = Dostuff::update_profile($_SESSION['user']['info']['data']['id'],
                                 $_SESSION['user']['info']['data']['username'],
                                 $_POST);
-        $go_to_page = 'index.php?page=minprofil';
         break;
 
     case 'register_convention' :
@@ -611,21 +610,69 @@ class Dostuff
     }
 
     /**
-     * Returns true if any update was possible, false otherwise.
+     * Updates the profile.
      */
     public static function update_profile($currentUserId, $currentUsername, $POST_DATA)
     {
+        $return_url = 'index.php?page=minprofil';
+        
+        // Check permissions.
         if ($POST_DATA['form_profile_users_id'] != $currentUserId /*&& 
         !in_array('PERM_UPDATE_OTHERS_PROFILE', $_SESSION['user']['info']['permissions'], true)*/) {
-            return false;
+            return $return_url;
         }
+        // Verify email not already used.
         $userId = Data\User::getUserIdByEmail($POST_DATA['form_profile_email'], true);
         if (is_numeric($userId) && $userId != $currentUserId) {
             View\Alerts::set('warning', 'Den här epostadressen är redan upptagen.');
-            return false;
+            return $return_url;
         }
-        // TODO: Add validation of the $POST_DATA here according to issue #1.
 
+        // Form validation...
+        // preparing format for postal_code
+        if (!empty($POST_DATA['form_profile_postal_code'])) {
+            $POST_DATA['form_profile_postal_code'] = str_replace(' ', '', $POST_DATA['form_profile_postal_code']);
+        }
+        // preparing format for phone_number
+        if (!empty($POST_DATA['form_profile_phone_number'])) {
+            $POST_DATA['form_profile_phone_number'] = Dostuff::stripSpacesAndDashes($POST_DATA['form_profile_phone_number']);
+        }
+        // preparing format for national_id_number
+        if (!empty($POST_DATA['form_profile_national_id_number'])) {
+            $POST_DATA['form_profile_national_id_number'] = Dostuff::stripSpacesAndDashes($POST_DATA['form_profile_national_id_number']);
+        }
+        
+        // Let the validation begin!
+        $validation['given_name'] = empty($POST_DATA['form_profile_given_name']) ? false : true;
+        $validation['family_name'] = empty($POST_DATA['form_profile_family_name']) ? false : true;
+        $validation['address'] = empty($POST_DATA['form_profile_address']) ? false : true;
+        $validation['postal_code'] = !empty($POST_DATA['form_profile_postal_code']) &&
+                                        is_numeric($POST_DATA['form_profile_postal_code']) ?
+                                        true : false;
+        $validation['city'] = empty($POST_DATA['form_profile_city']) ? false : true;
+        $validation['phone_number'] = !empty($POST_DATA['form_profile_phone_number']) &&
+                                        (is_numeric($POST_DATA['form_profile_phone_number']) ||
+                                            ($POST_DATA['form_profile_phone_number'][0] == '+' &&
+                                            is_numeric($POST_DATA['form_profile_phone_number'][1]))
+                                        ) ?
+                                        true : false;
+        $validation['email'] = !empty($POST_DATA['form_profile_email']) && Data\User::isValidEmail($POST_DATA['form_profile_email']) ? true : false;
+        $validation['national_id_number'] = !empty($POST_DATA['form_profile_national_id_number']) && Data\User::isValidNationalIdNumber($POST_DATA['form_profile_national_id_number']) ? true : false;
+        
+        $error_text['given_name'] = 'Du måste ange ditt förnamn.';
+        $error_text['family_name'] = 'Du måste ange ditt efternamn.';
+        $error_text['address'] = 'Du måste ange din gatuadress.';
+        $error_text['postal_code'] = 'Du måste ange ditt postnummer.';
+        $error_text['city'] = 'Du måste ange stad.';
+        $error_text['phone_number'] = 'Du måste ange ditt telefonnummer med endast siffror.';
+        $error_text['email'] = 'Du måste ange din email på ett korrekt sätt.';
+        $error_text['national_id_number'] = 'Du måste ange ditt personnummer.';
+        
+        $exceptions = array('form_profile_users_id', 'submit_dostuff');
+        $validateInputResult = Dostuff::validateInput($POST_DATA, $validation, $error_text, $exceptions, $return_url, 'user_profile_update');
+        if ($validateInputResult['valid'] === false) { return $validateInputResult['return_url']; }
+        
+        // Prepare the new user information.
         $userData = array();
         foreach ($POST_DATA as $key=>$value) {
             if (strpos($key, 'form_profile_') === 0) {
@@ -635,25 +682,27 @@ class Dostuff
         $userData['country'] = 'Sweden';
         $userData['male'] = $userData['male'];
         unset($userData['gender']);
-        $stagedChanges = Data\User::getStagedChangesForUserId($userId);
+        $stagedChanges = Data\User::getStagedChangesForUserId($currentUserId);
+        // Check if the user already have staged changes, if not, stage the new changes.
         if (isset($stagedChanges['users_id']) && is_numeric($stagedChanges['users_id'])) {
             $userData['user_staged_changes_id'] = $stagedChanges['user_staged_changes_id'];
             if (!Data\User::updateStagedDetailsForUser($userData)) {
                 View\Alerts::set('warning', 'Dina nya personuppgifter gick inte spara. Försök igen senare.');
-                return false;
+                return $return_url;
             }
         } else {
             if (!Data\User::stageNewDetailsForUser($userData)) {
                 View\Alerts::set('warning', 'Dina nya personuppgifter gick inte spara. Försök igen senare.');
-                return false;
+                return $return_url;
             }
         }
+        // Everything went well, nofifying the admins and user.
         Data\MailSender::notifyAdmin("Användarinformation har uppdaterats", "Det finns ny information om en användare som behöver granskas.");
 
         Data\Login::doLogin($currentUsername);
         View\Alerts::set('success', 'Dina personuppgifter har sparats.');
 
-        return true;
+        return $validateInputResult['return_url'];
     }
     
     public static function register_convention()
@@ -683,6 +732,39 @@ class Dostuff
         {
             View\Alerts::set('info', 'Dina anmälan kunde inte registreras. Försök igen senare eller kontakta oss.');
         }
+    }
+    
+    private static function validateInput($POST_DATA, $validation, $error_text, $exceptions,
+                                          $return_url, $prefix_for_success) {
+        foreach ($validation as $item => $value) {
+            $valid = (isset($valid) ? $valid : true);
+            $valid = ($valid === false ? false : $value);
+
+            if ($value === false) {
+                View\Alerts::set('warning', $error_text[$item]);
+                $errors[$item] = true;
+            }
+        }
+
+        if (!$valid) {
+            foreach ($error_text as $type => $value) {
+                $return_url .= (isset($errors[$type]) ? '&form_error_' . $type . '=1' : '');
+            }
+            foreach ($POST_DATA as $key => $value) {
+                if (in_array($key, $exceptions, true)) {
+                } else {
+                    $return_url .= '&form_data_' . $key . '=' . $value;
+                }
+            }
+        } else {
+            $return_url .= '&' . $prefix_for_success . '_submit_success=true';
+        }
+
+        return array('valid' => $valid, 'return_url' => $return_url);
+    }
+    
+    private static function stripSpacesAndDashes($text) {
+        return str_replace('-', '', str_replace(' ', '', $text));
     }
 
 }

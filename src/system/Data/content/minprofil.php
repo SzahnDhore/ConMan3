@@ -23,6 +23,13 @@ if (is_array($staged_changes) && !empty($staged_changes)) {
     unset($user_info['id']);
 }
 
+foreach ($_GET as $key => $value) {
+    $userInfoKey = str_replace('form_data_form_profile_', '', $key);
+    if (array_key_exists($userInfoKey, $user_info)) {
+        $user_info[$userInfoKey] = $_GET[$key];
+    }
+}
+
 /**
  * The following is simple contents.
  */
@@ -51,52 +58,52 @@ $contents['content_main'] = '
             <h2>Personuppgifter</h2>
             <input type="hidden" id="form_profile_users_id" name="form_profile_users_id" value="' . $user_info['users_id'] . '">
             <br />
-            <div class="form-group">
+            <div class="form-group' . (isset($_GET['form_error_given_name']) ? ' has-error' : '') . '">
                 <label for="form_profile_given_name" class="col-sm-4 control-label">Förnamn</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control input-sm" id="form_profile_given_name" name="form_profile_given_name" placeholder="Förnamn" value="' . $user_info['given_name'] . '">
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group' . (isset($_GET['form_error_family_name']) ? ' has-error' : '') . '">
                 <label for="form_profile_family_name" class="col-sm-4 control-label">Efternamn</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control input-sm" id="form_profile_family_name" name="form_profile_family_name" placeholder="Efternamn" value="' . $user_info['family_name'] . '">
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group' . (isset($_GET['form_error_address']) ? ' has-error' : '') . '">
                 <label for="form_profile_address" class="col-sm-4 control-label">Adress</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control input-sm" id="form_profile_address" name="form_profile_address" placeholder="Adress" value="' . $user_info['address'] . '">
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group' . (isset($_GET['form_error_postal_code']) ? ' has-error' : '') . '">
                 <label for="form_profile_postal_code" class="col-sm-4 control-label">Postnr.</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control input-sm" id="form_profile_postal_code" name="form_profile_postal_code" placeholder="Postnr." value="' . $user_info['postal_code'] . '">
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group' . (isset($_GET['form_error_city']) ? ' has-error' : '') . '">
                 <label for="form_profile_city" class="col-sm-4 control-label">Stad</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control input-sm" id="form_profile_city" name="form_profile_city" placeholder="Stad" value="' . $user_info['city'] . '">
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group' . (isset($_GET['form_error_phone_number']) ? ' has-error' : '') . '">
                 <label for="form_profile_phone_number" class="col-sm-4 control-label">Telenr.</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control input-sm" id="form_profile_phone_number" name="form_profile_phone_number" placeholder="Telenr." value="' . $user_info['phone_number'] . '">
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group' . (isset($_GET['form_error_email']) ? ' has-error' : '') . '">
                 <label for="form_profile_email" class="col-sm-4 control-label">Epost</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control input-sm" id="form_profile_email" name="form_profile_email" placeholder="Epost" value="' . $user_info['email'] . '">
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group' . (isset($_GET['form_error_national_id_number']) ? ' has-error' : '') . '">
                 <label for="form_profile_national_id_number" class="col-sm-4 control-label">Personnr.</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control input-sm" id="form_profile_national_id_number" name="form_profile_national_id_number" placeholder="Personnr." value="' . $user_info['national_id_number'] . '">
+                    <input type="text" class="form-control input-sm" id="form_profile_national_id_number" name="form_profile_national_id_number" placeholder="ÅÅÅÅMMDDNNNN" value="' . $user_info['national_id_number'] . '">
                 </div>
             </div>
             <div class="form-group">
