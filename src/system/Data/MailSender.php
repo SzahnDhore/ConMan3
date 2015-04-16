@@ -12,11 +12,11 @@ class MailSender
         $this->mail->CharSet   = 'UTF-8';
         $this->mail->Host      = Settings::mailsender('host');
         $this->mail->SMTPDebug = 0;
-        $this->mail->SMTPAuth  = true;
+        $this->mail->SMTPAuth  = Settings::mailsender('enable_security');
         $this->mail->Port      = Settings::mailsender('port');
         $this->mail->Username  = Settings::mailsender('username');
         $this->mail->Password  = Settings::mailsender('password');
-        $this->mail->SMTPSecure = 'ssl';
+        if (Settings::mailsender('enable_security')) { $this->mail->SMTPSecure = 'ssl'; }
         $this->mail->From = Settings::mailsender('from_address');
         $this->mail->FromName = Settings::mailsender('from_name');
     }
