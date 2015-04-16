@@ -34,4 +34,31 @@ class MailSender
         } else {
         }
     }
+    
+    public static function notifyUserPaymentConfirmed($email) {
+        // We assume mailsender has not be configured if the host is not set.
+        if (empty(Settings::mailsender('host'))) { return; }
+
+        $mailsender = new MailSender();
+        $mailsender->mail->addAddress($email);
+        $mailsender->mail->Subject = 'WSK 2015 - betalning';
+        $mailsender->mail->Body = 'Hej, din betalning för WSK 2015 är registrerad.';
+
+        if(!$mailsender->mail->send()) {
+        } else {
+        }
+    }
+    public static function notifyUserPaymentDismissed($email) {
+        // We assume mailsender has not be configured if the host is not set.
+        if (empty(Settings::mailsender('host'))) { return; }
+
+        $mailsender = new MailSender();
+        $mailsender->mail->addAddress($email);
+        $mailsender->mail->Subject = 'WSK 2015 - betalning';
+        $mailsender->mail->Body = 'Hej, din betalning för WSK 2015 är har inte blivit godkänd.';
+
+        if(!$mailsender->mail->send()) {
+        } else {
+        }
+    }
 }

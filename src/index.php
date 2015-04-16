@@ -69,7 +69,6 @@ $page = $url->getPageID();
  */
 $content = new Data\Content;
 $html_content = $content->getContent($page);
-
 // $template = $content->getTemplate();
 
 /**

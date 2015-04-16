@@ -33,6 +33,9 @@ if (isset($_GET['submit_dostuff'])) {
     $_POST['submit_dostuff'] = $_GET['submit_dostuff'];
 }
 
+$crr = new Data\MySQLConventionRegistrationRepository();
+$ur = new Data\MySQLUserRepository();
+
 switch ($_POST['submit_dostuff']) {
 
     case 'event_new' :
@@ -98,8 +101,18 @@ switch ($_POST['submit_dostuff']) {
         break;
 
     case 'register_convention' :
-        Dostuff::register_convention();
+        Dostuff::register_convention($_SESSION['user']['info']['data']['id'],
+                                        $_POST, $crr);
         $go_to_page = 'index.php?page=anmalningar';
+        break;
+
+    case 'payment_confirmed' :
+        Dostuff::confirm_payment($_POST, $crr, $ur);
+        $go_to_page = 'index.php?page=confirmpayments';
+        break;
+    case 'payment_dismissed' :
+        Dostuff::dismiss_payment($_POST, $crr, $ur);
+        $go_to_page = 'index.php?page=confirmpayments';
         break;
 
         default :
@@ -705,32 +718,43 @@ class Dostuff
         return $validateInputResult['return_url'];
     }
     
-    public static function register_convention()
+    public static function register_convention($userId, $POST_DATA, Data\IConventionRegistrationRepository $crr)
     {
-        $request = array(
-            'table' => 'convention_registrations',
-            'data' => array( array(
-                    'users_id' => $_SESSION['user']['info']['data']['id'],
-                    'convention_registration_form_id' => $_POST['entrance_type'],
-                    'member' => (isset($_POST['member']) && $_POST['member'] == '1' ? '1' : 0),
-                    'mug' => (isset($_POST['mug']) && $_POST['mug'] == '1' ? '1' : 0),
-                    'payment_registered' => 0
-                )),
-            );
-        $registration_id = Data\Database::create($request, false);
-        if (is_numeric($registration_id))
+        $registration = $crr->getRegistrationByUserId($userId);
+        $POST_DATA['users_id'] = $userId;
+        if (empty($registration))
         {
+            $crr->addRegistration($POST_DATA);
             Data\MailSender::notifyAdmin("Ny föranmälan", "En ny föranmälan har skapats.");
             View\Alerts::set('success', 'Dina anmälan har registrerats. Se FAQ nedan för hur du betalar.');
         }
-        else if (is_array($registration_id) && $registration_id[1] === 1062)
-        {
-            Data\MailSender::notifyAdmin("Problem med föranmälan", "Ett försök att skapa en föranmälan har misslyckats. En föranmälan har redan gjorts för users_id: " .$_SESSION['user']['info']['data']['id']);
-            View\Alerts::set('warning', 'Din anmälan har redan registrerats. Vänligen kontakta oss om detta är ett fel.');
-        }
         else
         {
-            View\Alerts::set('info', 'Dina anmälan kunde inte registreras. Försök igen senare eller kontakta oss.');
+            $crr->updateRegistration($registration[0]['convention_registrations_id'],
+                                    $registration[0]['number_of_updates'],
+                                    $POST_DATA);
+            Data\MailSender::notifyAdmin("Ny föranmälan", "En ny föranmälan har uppdaterats.");
+            View\Alerts::set('success', 'Dina anmälan har uppdaterats. Se FAQ nedan för hur du betalar.');
+        }
+    }
+    
+    public static function confirm_payment($POST_DATA, Data\IConventionRegistrationRepository $crr, Data\IUserRepository $ur)
+    {
+        if (!in_array('PERM_COMFIRM_USER_PAYMENTS', $_SESSION['user']['info']['permissions'], true)) { return; }
+        if ($crr->confirmPayment($POST_DATA['form_confirm_payment_convention_registrations_id']))
+        {
+            $email = $ur->getEmailByUserId($POST_DATA['form_confirm_payment_users_id']);
+            Data\MailSender::notifyUserPaymentConfirmed($email);
+        }
+    }
+    
+    public static function dismiss_payment($POST_DATA, Data\IConventionRegistrationRepository $crr, Data\IUserRepository $ur)
+    {
+        if (!in_array('PERM_COMFIRM_USER_PAYMENTS', $_SESSION['user']['info']['permissions'], true)) { return; }
+        if ($crr->dismissPayment($POST_DATA['form_confirm_payment_convention_registrations_id']))
+        {
+            $email = $ur->getEmailByUserId($POST_DATA['form_confirm_payment_users_id']);
+            Data\MailSender::notifyUserPaymentDismissed($email);
         }
     }
     

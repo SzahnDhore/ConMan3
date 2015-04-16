@@ -13,7 +13,8 @@ use \Szandor\ConMan\View as View;
 // print_r($_SESSION['user']);
 
 $user_info = $_SESSION['user']['info'];
-$registration_data = Data\User::getConventionRegistrationData($_SESSION['user']['info']['data']['id']);
+$crr = new Data\MySQLConventionRegistrationRepository();
+$registration_data = $crr->getRegistrationByUserId($_SESSION['user']['info']['data']['id']);
 $registration_content_array = Data\Content::getEntranceContentForRegistrationPage();
 
 /**
@@ -46,7 +47,7 @@ $contents['content_main'] = (empty($registration_content_array) ?
 <div class="row">
     <form id="form_register_convention" name="form_register_convention" class="form-horizontal" action="dostuff.php" method="post">
         <div class="col-sm-6 col-xs-12">
-            <div' . (!empty($registration_data) ? " style=\"display: none;\"" : "") . '>
+            <div' . (isset($registration_data[0]['payment_registered']) && $registration_data[0]['payment_registered'] != null ? " style=\"display: none;\"" : "") . '>
                 <h3>Anmälan WSK 2015</h3>
                 <p>Barn under 13 år betalar endast medlemsavgift för inträde på konventet. Medlemmar får 150kr i rabatt på inträde.</p>
                 <dl class="dl-horizontal">
@@ -71,7 +72,7 @@ $contents['content_main'] = (empty($registration_content_array) ?
                 <dt>Anmälan</dt>
                 <dd>' . (!empty($registration_data) ? "Inskickad" : "Ej inskickad") . '</dd>
                 <dt>Betalning</dt>
-                <dd>' . (!empty($registration_data) && $registration_data[0]['payment_registered'] == '1' ? "Registrerad" : "Ej registrerad") . '</dd>
+                <dd>' . (!empty($registration_data) && $registration_data[0]['payment_registered'] != null ? "Registrerad" : "Ej registrerad") . '</dd>
             </dl>
         </div>
         <div class="col-sm-6 col-xs-12">
@@ -166,12 +167,12 @@ $contents['content_bottom'] = (empty($registration_content_array) ? '' : '
             }
             if (mug) { addItemToRegistrationSum("Mugg", 70); }
             $("#registration_sum").html(sum.toString() +" kr");
-            ' . (empty($registration_data) ? '
-            if (sum == 0) {
+            ' . (isset($registration_data[0]['payment_registered']) && $registration_data[0]['payment_registered'] == null ? '' : 
+            'if (sum == 0) {
                 $("#form_register_convention_submit").attr("disabled", "disabled");
             } else {
                 $("#form_register_convention_submit").attr("disabled", false);
-            }' : '' ) . '
+            }' ) . '
         }
 
         function addItemToRegistrationSum(description, price) {

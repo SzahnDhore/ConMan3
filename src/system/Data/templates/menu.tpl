@@ -10,6 +10,38 @@
                 <div class="collapse navbar-collapse">
 {% if user_logged_in %}
                     <ul class="nav navbar-nav navbar-right">
+
+{% if show_adminpage_confirm_payments or
+      show_adminpage_confirm_updated_user_information or
+      show_adminpage_view_statistics %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-tasks fa-stack-1x fa-dark"></i>
+                                </span>
+                                <span class="hidden-sm"> Admin </span>
+                                {% if show_adminpage_nbr_of_tasks > 0 %}<span class="badge">{{ show_adminpage_nbr_of_tasks }}</span>{% endif %}
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                            {% if show_adminpage_confirm_updated_user_information %}
+                                <li><a href="{{ base_url }}index.php?page=confirmstageduserdetails">Godkänn medlemsuppgifter {% if show_adminpage_nbr_of_unconfirmed_user_details > 0 %}<span class="badge">{{ show_adminpage_nbr_of_unconfirmed_user_details }}</span>{% endif %}</a></li>
+                            {% endif %}
+                            {% if show_adminpage_confirm_payments %}
+                                <li><a href="{{ base_url }}index.php?page=confirmpayments">Godkänn betalningar {% if show_adminpage_nbr_of_unconfirmed_payments > 0 %}<span class="badge">{{ show_adminpage_nbr_of_unconfirmed_payments }}</span>{% endif %}</a></li>
+                            {% endif %}
+                            {% if (show_adminpage_confirm_payments or
+                                  show_adminpage_confirm_updated_user_information) and
+                                  show_adminpage_view_statistics %}
+                                <li class="divider"></li>
+                            {% endif %}
+                            {% if show_adminpage_view_statistics %}
+                                <li><a href="{{ base_url }}index.php?page=sitestatistics">Statistik</a></li>
+                            {% endif %}
+                            </ul>
+                        </li>
+{% endif %}
 {% if 1 == 1 %}
                         <li>
                             <a href="{{ base_url }}index.php?page=minprofil">

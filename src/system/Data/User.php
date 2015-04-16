@@ -124,26 +124,6 @@ class User
     }
 
     /**
-     *Returns registration data for a specific user
-     */
-    public static function getConventionRegistrationData($user = false)
-    {
-        if ($user === false || !is_numeric($user)) {
-            return false;
-        } else {
-            $users_request = array(
-                'table' => 'convention_registrations',
-                'limit' => 1,
-                'where' => array(
-                    'col' => 'users_id',
-                    'values' => $user,
-                ),
-            );
-            return Data\Database::read($users_request, false);
-        }
-    }
-
-    /**
      * Checks the users table first and then the staged table. Returns
      * false if no user id was found.
      */

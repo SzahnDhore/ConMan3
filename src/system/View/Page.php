@@ -29,6 +29,8 @@ class Page
             'autoescape' => false,
         ));
         $template = $twig->loadTemplate('default.tpl');
+        $crr = new Data\MySQLConventionRegistrationRepository();
+        $ur = new Data\MySQLUserRepository();
 
         $page_content['user_logged_in'] = $userIsLoggedIn;
         $page_content['username'] = ($userIsLoggedIn ? $_SESSION['user']['info']['data']['username'] : false);
@@ -37,6 +39,25 @@ class Page
         $page_content['show_alerts'] = Alerts::display();
         $page_content['show_alerts_body'] = ($page_content['show_alerts'] == '' ? '' : ' class="modal-open"');
         $page_content['show_alerts_javascript'] = Alerts::javaScript();
+        $page_content['show_adminpage_confirm_updated_user_information'] = isset($_SESSION['user']) &&
+                                                                            in_array('PERM_COMFIRM_NEW_USER_DETAILS',
+                                                                                $_SESSION['user']['info']['permissions']);
+        $page_content['show_adminpage_nbr_of_unconfirmed_user_details'] = $ur->getNumberOfUnconfirmedUserDetails();
+        $page_content['show_adminpage_confirm_payments'] = isset($_SESSION['user']) &&
+                                                            in_array('PERM_COMFIRM_USER_PAYMENTS',
+                                                                $_SESSION['user']['info']['permissions']);
+        $page_content['show_adminpage_nbr_of_unconfirmed_payments'] = $crr->getNumberOfUnconfirmedPayments();
+        $page_content['show_adminpage_view_statistics'] = isset($_SESSION['user']) &&
+                                                            in_array('stab', $_SESSION['user']['info']['groups']);
+        $page_content['show_adminpage_nbr_of_tasks'] = 0;
+        if ($page_content['show_adminpage_confirm_updated_user_information'])
+        {
+            $page_content['show_adminpage_nbr_of_tasks'] += $page_content['show_adminpage_nbr_of_unconfirmed_user_details'];
+        }
+        if ($page_content['show_adminpage_confirm_payments'])
+        {
+            $page_content['show_adminpage_nbr_of_tasks'] += $page_content['show_adminpage_nbr_of_unconfirmed_payments'];
+        }
 
         $this->page_content = $page_content;
 
