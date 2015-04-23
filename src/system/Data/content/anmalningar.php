@@ -167,7 +167,7 @@ $contents['content_bottom'] = (empty($registration_content_array) ? '' : '
             }
             if (mug) { addItemToRegistrationSum("Mugg", 70); }
             $("#registration_sum").html(sum.toString() +" kr");
-            ' . (isset($registration_data[0]['payment_registered']) && $registration_data[0]['payment_registered'] == null ? '' : 
+            ' . (isset($registration_data[0]['payment_registered']) && $registration_data[0]['payment_registered'] != null ? '' : 
             'if (sum == 0) {
                 $("#form_register_convention_submit").attr("disabled", "disabled");
             } else {
