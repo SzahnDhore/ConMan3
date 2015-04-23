@@ -24,13 +24,29 @@ The basic idea is to build a solid system for managing visitors and events at an
 
 ### Latest version
 
+#### v0.5 - 2015-04-23
+
+##### Bugfixes
+* Entering the wrong password does not always notify the user that it is wrong.
+* The page "arrangemang" crashes when no events exists.
+* The page "Skapa nytt arrange­mang" crashes when no event types exists.
+* My profile does not show the correct info.
+
+##### New features
+
+* The registration prices are stored in the database.
+* Added support to send emails.
+* Group based user system.
+* Changed to a role based permission system.
+* It is possible to sign up for the convention.
+* Added data validation for the page my profile.
+
+### Earlier versions
+
 #### v0.4 - 2015-02-26
 
 * Users can now change their user data.
 * A throttle system is in place to keep brute force crackers at bay.
-
-
-### Earlier versions
 
 #### v0.3 - 2015-02-06
 
