@@ -66,6 +66,14 @@ class MySQLConventionRegistrationRepository implements IConventionRegistrationRe
 
     public function getRegistrations()
     {
+        $users_request = array(
+            'table' => 'convention_registrations'
+        );
+        return Data\Database::read($users_request, false);
+    }
+
+    public function getRegistrationData()
+    {
         $registrations_request = '
                             SELECT szcm3_convention_registrations.*,
                                 szcm3_convention_registration_form.if_member_price_reduced_by,

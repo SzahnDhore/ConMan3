@@ -7,7 +7,7 @@ use \Szandor\ConMan\Logic as Logic;
 use \Szandor\ConMan\View as View;
 
 $crr = new Data\MySQLConventionRegistrationRepository();
-$registrations = $crr->getRegistrations();
+$registrations = $crr->getRegistrationData();
 
 $registrations_body = [];
 foreach ($registrations as $registration)

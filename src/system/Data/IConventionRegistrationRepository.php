@@ -9,6 +9,7 @@ interface IConventionRegistrationRepository
     public function updateRegistration($registrationId, $numberOfUpdates, $registrationData);
     public function getNumberOfUnconfirmedPayments();
     public function getRegistrations();
+    public function getRegistrationData();
     public function confirmPayment($paymentId);
     public function dismissPayment($paymentId);
 
