@@ -112,6 +112,27 @@ class MySQLConventionRegistrationRepository implements IConventionRegistrationRe
             );
         return Data\Database::update($request, false);
     }
+    
+    public function getTimeDifferenceRegistrationCreatedAndPaymentRegistered($daysBackInTime)
+    {
+        if (!is_numeric($daysBackInTime)) { return false; }
+
+        $db_request = 'SELECT * FROM (SELECT TIME_TO_SEC (TIMEDIFF(`payment_registered`, `date_created`)) as diff FROM `szcm3_convention_registrations` WHERE `date_created` > now() - INTERVAL ? DAY ) as a WHERE a.diff is not NULL;';
+        $statistics = Data\Database::read_raw_sql($db_request, array($daysBackInTime));
+        if (empty($statistics)) { return array('min' => 0, 'max' => 0, 'average' => 0); }
+        $sum = 0;
+        $min = 0;
+        $max = 0;
+        for ($i = 0; $i < count($statistics); $i++)
+        {
+            $value = intval($statistics[$i]['diff']);
+            $sum += $value;
+            if ($value < $min || $min == 0) { $min = $value; }
+            if ($value > $max) { $max = $value; }
+        }
+
+        return array('min' => $min, 'max' => $max, 'average' => intval($sum / count($statistics)));
+    }
 
 }
 
