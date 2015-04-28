@@ -141,6 +141,18 @@ class MySQLConventionRegistrationRepository implements IConventionRegistrationRe
 
         return array('min' => $min, 'max' => $max, 'average' => intval($sum / count($statistics)));
     }
+    
+    public function getRegistrationsPerDay()
+    {
+        $db_request = 'SELECT szcm3_convention_registration_form.description, count(*) as occurrences
+                        FROM `szcm3_convention_registrations`
+                        LEFT JOIN `szcm3_convention_registration_form` ON 
+                            szcm3_convention_registrations.convention_registration_form_id=
+                            szcm3_convention_registration_form.convention_registration_form_id
+                        GROUP BY description
+                        ORDER BY description DESC;';
+        return Data\Database::read_raw_sql($db_request, array());
+    }
 
 }
 

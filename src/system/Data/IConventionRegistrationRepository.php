@@ -15,4 +15,5 @@ interface IConventionRegistrationRepository
 
     // statistics part
     public function getTimeDifferenceRegistrationCreatedAndPaymentRegistered($daysBackInTime);
+    public function getRegistrationsPerDay();
 }

@@ -11,7 +11,6 @@ $tdrcapr3 = $crr->getTimeDifferenceRegistrationCreatedAndPaymentRegistered(3);
 $tdrcapr1 = $crr->getTimeDifferenceRegistrationCreatedAndPaymentRegistered(1);
 $tdrcapr100 = $crr->getTimeDifferenceRegistrationCreatedAndPaymentRegistered(100);
 $registrations = $crr->getRegistrations();
-//die(var_dump($registrations));
 $members = 0;
 $mugs = 0;
 foreach ($registrations as $registration)
@@ -19,6 +18,16 @@ foreach ($registrations as $registration)
     if ($registration['member'] == '1') { $members += 1; }
     if ($registration['mug'] == '1') { $mugs += 1; }
 }
+
+$registrationsPerDay = $crr->getRegistrationsPerDay();
+$registrationsPerDayHTML = '';
+foreach ($registrationsPerDay as $reg)
+{
+    $desc = str_replace('Inträde WSK 2015, ', '', $reg['description']);
+    $desc = str_replace(', jag vill bara stöja föreningen och/eller är under 13 år', '', $desc);
+    $registrationsPerDayHTML .= '<dt>' . ucfirst($desc) . '</dt><dd>' . $reg['occurrences'] . ' st</dd>';
+}
+
 
 /**
  * The following is simple contents.
@@ -78,6 +87,12 @@ $contents['content_main'] = '<div class="row">
                     <dd>' . $members . ' st</dd>
                     <dt>Antal muggar</dt>
                     <dd>' . $mugs . ' st</dd>
+                </dl>
+            </div>
+            <div class="col-sm-6 col-xs-4">
+                <h3>Typer av anmälningar</h3>
+                <dl class="dl-horizontal">
+                    ' . $registrationsPerDayHTML . '
                 </dl>
             </div>
         </div>
