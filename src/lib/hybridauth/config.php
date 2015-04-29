@@ -31,8 +31,8 @@ return array(
         "Google" => array(
             "enabled" => true,
             "keys" => array(
-                "id" => "838834214219-n5uao3t6f4g5gaibm56bno44qj6n419a.apps.googleusercontent.com",
-                "secret" => "keoFYlu2BLqUTgqc65pmtXYr",
+                "id" => "",
+                "secret" => "",
                 "scope" => "https://www.googleapis.com/auth/userinfo.profile",
             ),
         ),
@@ -40,8 +40,8 @@ return array(
         "Facebook" => array(
             "enabled" => true,
             "keys" => array(
-                "id" => "937754216249917",
-                "secret" => "e07759669c0a37718d289219d16e0d1e",
+                "id" => "",
+                "secret" => "",
             ),
             "trustForwarded" => false,
             "scope" => "public_profile, email",
@@ -50,8 +50,8 @@ return array(
         "Twitter" => array(
             "enabled" => false,
             "keys" => array(
-                "key" => "m8MCIYMmTorM96b4fEgmfw",
-                "secret" => "prTJeC3dfQS8FGkjS4SKZGUjjWT4APmyKkO1b0OfA",
+                "key" => "",
+                "secret" => "",
             )
         ),
 
