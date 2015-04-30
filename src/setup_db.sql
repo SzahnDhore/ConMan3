@@ -221,11 +221,11 @@ CREATE TABLE IF NOT EXISTS `szcm3_convention_registration_periods` (
  * Basic setup for a convention with preregistrations...
  */
 
-INSERT INTO `szcm3_convention_registration_periods`(`convention_registration_periods_id`, `date_created`, `date_updated`, `description`, `last_registration_date`) VALUES (1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'Föranmälan slutar', '2015-06-01 12:00:00');
+INSERT INTO `szcm3_convention_registration_periods`(`convention_registration_periods_id`, `date_created`, `date_updated`, `description`, `last_registration_date`) VALUES (1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'Föranmälan slutar', '2015-06-26 23:59:59');
 
 INSERT INTO `szcm3_convention_registration_periods`(`convention_registration_periods_id`, `date_created`, `date_updated`, `description`, `last_registration_date`) VALUES (2,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'Konventet slutar', '2015-07-05 23:59:59');
  
-INSERT INTO `szcm3_convention_registration_form`(`date_created`, `date_updated`, `belongs_to_registration_period`, `description`, `if_member_price_reduced_by`, `price`) VALUES (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,'Inträde WSK 2015, hela konventet',-150,300);
+INSERT INTO `szcm3_convention_registration_form`(`date_created`, `date_updated`, `belongs_to_registration_period`, `description`, `if_member_price_reduced_by`, `price`) VALUES (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,'Inträde WSK 2015, hela konventet',-150,250);
 
 INSERT INTO `szcm3_convention_registration_form`(`date_created`, `date_updated`, `belongs_to_registration_period`, `description`, `if_member_price_reduced_by`, `price`) VALUES (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,'Inträde WSK 2015, fredag',-150,150);
 
