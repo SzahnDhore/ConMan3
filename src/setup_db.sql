@@ -191,6 +191,7 @@ CREATE TABLE IF NOT EXISTS `szcm3_convention_registrations` (
   `convention_registration_form_id` int(15) NOT NULL,
   `member` int(11) NOT NULL DEFAULT '0',
   `mug` int(11) NOT NULL DEFAULT '0',
+  `sleeping_room` int(11) NOT NULL DEFAULT '0',
   `payment_registered` datetime,
   `number_of_updates` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`convention_registrations_id`),

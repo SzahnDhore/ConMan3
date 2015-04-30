@@ -65,6 +65,12 @@ $contents['content_main'] = (empty($registration_content_array) ?
                             Jag vill köpa årets konventsmugg - 70kr
                         </label>
                     </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="sleeping_room" value="1" id="sleeping_room">
+                            Jag vill sova i en sovsal - 0kr
+                        </label>
+                    </div>
                 </dl>
             </div>
             <h3>Status</h3>
@@ -125,6 +131,7 @@ $contents['content_bottom'] = (empty($registration_content_array) ? '' : '
     $(document).ready(function() {
         var member = ' . (!isset($registration_data[0]['member']) || $registration_data[0]['member'] == '1' ? 'true' : 'false') . ';
         var mug = ' . (isset($registration_data[0]['mug']) && $registration_data[0]['mug'] == '1' ? 'true' : 'false') . ';
+        var sleepingRoom = ' . (isset($registration_data[0]['sleeping_room']) && $registration_data[0]['sleeping_room'] == '1' ? 'true' : 'false') . ';
         var sum = 0;
 
         // pagesetup begin
@@ -139,6 +146,7 @@ $contents['content_bottom'] = (empty($registration_content_array) ? '' : '
         ' . (isset($registration_data[0]['convention_registration_form_id']) ? '$("input[name=entrance_type][value=' . $registration_data[0]['convention_registration_form_id'] . ']").prop(\'checked\', true);' : '$(\'#entrance_type0\').prop(\'checked\', true);' ) . '
         if (member) { $(\'#registration_member\').prop(\'checked\', true); }
         if (mug) { $(\'#registration_mug\').prop(\'checked\', true); }
+        if (sleepingRoom) { $(\'#sleeping_room\').prop(\'checked\', true); }
 
         // pagesetup ends
         $("#registration_entrance").change(function() {
@@ -150,8 +158,13 @@ $contents['content_bottom'] = (empty($registration_content_array) ? '' : '
             updateTable();
         });
 
-         $("#registration_mug").change(function() {
+        $("#registration_mug").change(function() {
             mug = this.checked;
+            updateTable();
+        });
+
+        $("#sleeping_room").change(function() {
+            sleepingRoom = this.checked;
             updateTable();
         });
 
@@ -167,6 +180,7 @@ $contents['content_bottom'] = (empty($registration_content_array) ? '' : '
                 }
             }
             if (mug) { addItemToRegistrationSum("Mugg", 70); }
+            if (sleepingRoom) { addItemToRegistrationSum("Sovsal", 0); }
             $("#registration_sum").html(sum.toString() +" kr");
             ' . (isset($registration_data[0]['payment_registered']) && $registration_data[0]['payment_registered'] != null ? '' : 
             'if (sum == 0) {

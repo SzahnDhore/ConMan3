@@ -13,10 +13,12 @@ $tdrcapr100 = $crr->getTimeDifferenceRegistrationCreatedAndPaymentRegistered(100
 $registrations = $crr->getRegistrations();
 $members = 0;
 $mugs = 0;
+$sleepingRooms = 0;
 foreach ($registrations as $registration)
 {
     if ($registration['member'] == '1') { $members += 1; }
     if ($registration['mug'] == '1') { $mugs += 1; }
+    if ($registration['sleeping_room'] == '1') { $sleepingRooms += 1; }
 }
 
 $registrationsPerDay = $crr->getRegistrationsPerDay();
@@ -28,6 +30,12 @@ foreach ($registrationsPerDay as $reg)
     $registrationsPerDayHTML .= '<dt>' . ucfirst($desc) . '</dt><dd>' . $reg['occurrences'] . ' st</dd>';
 }
 
+function secondsToTime($seconds) {
+    $dtF = new \DateTime("@0");
+    $dtT = new \DateTime("@$seconds");
+
+    return $dtF->diff($dtT)->format('%ad %ht %im %ss');
+}
 
 /**
  * The following is simple contents.
@@ -46,47 +54,48 @@ $contents['content_top'] = '';
 $contents['content_main'] = '<div class="row">
     <div class="col-xs-12">
         <div class=row>
-            <h1 style="text-align: center;">Statistik för systemet här</h1>
+            <h1 style="text-align: center;">Statistik</h1>
             <div class="col-sm-6 col-xs-8">
                 <h3>Tid för att godkänna en anmälan</h3>
-                <p>Format: månader:dagar timmar:minuter:sekunder</p>
                 <h4>1 dag</h4>
                 <dl class="dl-horizontal">
                     <dt>Minsta tid</dt>
-                    <dd>' . ($tdrcapr1["min"] > 0 ? date('m:d H:i:s', $tdrcapr1["min"]) : 'data saknas') . '</dd>
+                    <dd>' . ($tdrcapr1["min"] > 0 ? secondsToTime($tdrcapr1["min"]) : 'data saknas') . '</dd>
                     <dt>Genomsnittlig tid</dt>
-                    <dd>' . ($tdrcapr1["average"] > 0 ? date('m:d H:i:s', $tdrcapr1["average"]) : 'data saknas') . '</dd>
+                    <dd>' . ($tdrcapr1["average"] > 0 ? secondsToTime($tdrcapr1["average"]) : 'data saknas') . '</dd>
                     <dt>Längsta tid</dt>
-                    <dd>' . ($tdrcapr1["max"] > 0 ? date('m:d H:i:s', $tdrcapr1["max"]) : 'data saknas') . '</dd>
+                    <dd>' . ($tdrcapr1["max"] > 0 ? secondsToTime($tdrcapr1["max"]) : 'data saknas') . '</dd>
                 </dl>
                 <h4>3 dagar</h4>
                 <dl class="dl-horizontal">
                     <dt>Minsta tid</dt>
-                    <dd>' . ($tdrcapr3["min"] > 0 ? date('m:d H:i:s', $tdrcapr3["min"]) : 'data saknas') . '</dd>
+                    <dd>' . ($tdrcapr3["min"] > 0 ? secondsToTime($tdrcapr3["min"]) : 'data saknas') . '</dd>
                     <dt>Genomsnittlig tid</dt>
-                    <dd>' . ($tdrcapr3["average"] > 0 ? date('m:d H:i:s', $tdrcapr3["average"]) : 'data saknas') . '</dd>
+                    <dd>' . ($tdrcapr3["average"] > 0 ? secondsToTime($tdrcapr3["average"]) : 'data saknas') . '</dd>
                     <dt>Längsta tid</dt>
-                    <dd>' . ($tdrcapr3["max"] > 0 ? date('m:d H:i:s', $tdrcapr3["max"]) : 'data saknas') . '</dd>
+                    <dd>' . ($tdrcapr3["max"] > 0 ? secondsToTime($tdrcapr3["max"]) : 'data saknas') . '</dd>
                 </dl>
                 <h4>100 dagar</h4>
                 <dl class="dl-horizontal">
                     <dt>Minsta tid</dt>
-                    <dd>' . ($tdrcapr100["min"] > 0 ? date('m:d H:i:s', $tdrcapr100["min"]) : 'data saknas') . '</dd>
+                    <dd>' . ($tdrcapr100["min"] > 0 ? secondsToTime($tdrcapr100["min"]) : 'data saknas') . '</dd>
                     <dt>Genomsnittlig tid</dt>
-                    <dd>' . ($tdrcapr100["average"] > 0 ? date('m:d H:i:s', $tdrcapr100["average"]) : 'data saknas') . '</dd>
+                    <dd>' . ($tdrcapr100["average"] > 0 ? secondsToTime($tdrcapr100["average"]) : 'data saknas') . '</dd>
                     <dt>Längsta tid</dt>
-                    <dd>' . ($tdrcapr100["max"] > 0 ? date('m:d H:i:s', $tdrcapr100["max"]) : 'data saknas') . '</dd>
+                    <dd>' . ($tdrcapr100["max"] > 0 ? secondsToTime($tdrcapr100["max"]) : 'data saknas') . '</dd>
                 </dl>
             </div>
             <div class="col-sm-6 col-xs-4">
                 <h3>Anmälningar</h3>
                 <dl class="dl-horizontal">
-                    <dt>Antal anmälningar</dt>
+                    <dt>Anmälningar</dt>
                     <dd>' . count($registrations) . ' st</dd>
-                    <dt>Antal medlemmar</dt>
+                    <dt>Medlemmar</dt>
                     <dd>' . $members . ' st</dd>
-                    <dt>Antal muggar</dt>
+                    <dt>Muggar</dt>
                     <dd>' . $mugs . ' st</dd>
+                    <dt>Sovsal</dt>
+                    <dd>' . $sleepingRooms . ' st</dd>
                 </dl>
             </div>
             <div class="col-sm-6 col-xs-4">

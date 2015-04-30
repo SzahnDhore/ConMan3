@@ -34,6 +34,7 @@ class MySQLConventionRegistrationRepository implements IConventionRegistrationRe
                     'convention_registration_form_id' => $registrationData['entrance_type'],
                     'member' => (isset($registrationData['member']) && $registrationData['member'] == '1' ? '1' : 0),
                     'mug' => (isset($registrationData['mug']) && $registrationData['mug'] == '1' ? '1' : 0),
+                    'sleeping_room' => (isset($registrationData['sleeping_room']) && $registrationData['sleeping_room'] == '1' ? '1' : 0),
                     'payment_registered' => null
                 )),
             );
@@ -50,6 +51,7 @@ class MySQLConventionRegistrationRepository implements IConventionRegistrationRe
                     'convention_registration_form_id' => $registrationData['entrance_type'],
                     'member' => (isset($registrationData['member']) && $registrationData['member'] == '1' ? '1' : 0),
                     'mug' => (isset($registrationData['mug']) && $registrationData['mug'] == '1' ? '1' : 0),
+                    'sleeping_room' => (isset($registrationData['sleeping_room']) && $registrationData['sleeping_room'] == '1' ? '1' : 0),
                     'payment_registered' => null,
                     'number_of_updates' => intval($numberOfUpdates) + 1
                 ),
