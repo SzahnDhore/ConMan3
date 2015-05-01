@@ -79,6 +79,7 @@ class MySQLConventionRegistrationRepository implements IConventionRegistrationRe
         $registrations_request = '
                             SELECT szcm3_convention_registrations.*,
                                 szcm3_convention_registration_form.if_member_price_reduced_by,
+                                szcm3_convention_registration_form.belongs_to_registration_period,
                                 szcm3_convention_registration_form.price,
                                 szcm3_users.username,
                                 szcm3_users.email,
@@ -97,6 +98,14 @@ class MySQLConventionRegistrationRepository implements IConventionRegistrationRe
                                     szcm3_user_details.users_id
                             ORDER BY szcm3_convention_registrations.date_created DESC;';
             return Data\Database::read_raw_sql($registrations_request, array());
+    }
+    
+    public function getAllEntranceTypesForAllPeriods()
+    {
+        $request = array(
+            'table' => 'convention_registration_form'
+        );
+        return Data\Database::read($request, false);
     }
 
     public function confirmPayment($paymentId)

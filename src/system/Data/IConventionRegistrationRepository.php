@@ -10,6 +10,7 @@ interface IConventionRegistrationRepository
     public function getNumberOfUnconfirmedPayments();
     public function getRegistrations();
     public function getRegistrationData();
+    public function getAllEntranceTypesForAllPeriods();
     public function confirmPayment($paymentId);
     public function dismissPayment($paymentId);
 

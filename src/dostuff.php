@@ -686,12 +686,7 @@ class Dostuff
         if ($validateInputResult['valid'] === false) { return $validateInputResult['return_url']; }
         
         // Prepare the new user information.
-        $userData = array();
-        foreach ($POST_DATA as $key=>$value) {
-            if (strpos($key, 'form_profile_') === 0) {
-                $userData[str_replace('form_profile_', '', $key)] = $POST_DATA[$key];
-            }
-        }
+        $userData = Dostuff::stripPrefixesForAllKeys($POST_DATA, 'form_profile_');
         $userData['country'] = 'Sweden';
         $userData['male'] = $userData['male'];
         unset($userData['gender']);
@@ -741,9 +736,16 @@ class Dostuff
     public static function confirm_payment($POST_DATA, Data\IConventionRegistrationRepository $crr, Data\IUserRepository $ur)
     {
         if (!in_array('PERM_COMFIRM_USER_PAYMENTS', $_SESSION['user']['info']['permissions'], true)) { return; }
-        if ($crr->confirmPayment($POST_DATA['form_confirm_payment_convention_registrations_id']))
+        $POST_DATA = Dostuff::stripPrefixesForAllKeys($POST_DATA, 'form_confirm_payment_');
+
+        $registration = $crr->getRegistrationByUserId($POST_DATA['users_id']);
+        $crr->updateRegistration($registration[0]['convention_registrations_id'],
+                                    $registration[0]['number_of_updates'],
+                                    $POST_DATA);
+                                    
+        if ($crr->confirmPayment($POST_DATA['convention_registrations_id']))
         {
-            $email = $ur->getEmailByUserId($POST_DATA['form_confirm_payment_users_id']);
+            $email = $ur->getEmailByUserId($POST_DATA['users_id']);
             Data\MailSender::notifyUserPaymentConfirmed($email);
         }
     }
@@ -789,6 +791,16 @@ class Dostuff
     
     private static function stripSpacesAndDashes($text) {
         return str_replace('-', '', str_replace(' ', '', $text));
+    }
+    
+    private static function stripPrefixesForAllKeys($data, $prefix)
+    {
+        $arr = array();
+        foreach ($data as $key=>$value) {
+            $arr[str_replace($prefix, '', $key)] = $data[$key];
+        }
+
+        return $arr;
     }
 
 }
