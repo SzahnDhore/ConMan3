@@ -57,7 +57,7 @@ $contents['content_main'] = '<div class="row">
             <h1 style="text-align: center;">Statistik</h1>
             <div class="col-sm-6 col-xs-8">
                 <h3>Tid för att godkänna en anmälan</h3>
-                <h4>1 dag</h4>
+                <h4>1 dag tillbaka</h4>
                 <dl class="dl-horizontal">
                     <dt>Minsta tid</dt>
                     <dd>' . ($tdrcapr1["min"] > 0 ? secondsToTime($tdrcapr1["min"]) : 'data saknas') . '</dd>
@@ -66,7 +66,7 @@ $contents['content_main'] = '<div class="row">
                     <dt>Längsta tid</dt>
                     <dd>' . ($tdrcapr1["max"] > 0 ? secondsToTime($tdrcapr1["max"]) : 'data saknas') . '</dd>
                 </dl>
-                <h4>3 dagar</h4>
+                <h4>3 dagar tillbaka</h4>
                 <dl class="dl-horizontal">
                     <dt>Minsta tid</dt>
                     <dd>' . ($tdrcapr3["min"] > 0 ? secondsToTime($tdrcapr3["min"]) : 'data saknas') . '</dd>
@@ -75,7 +75,7 @@ $contents['content_main'] = '<div class="row">
                     <dt>Längsta tid</dt>
                     <dd>' . ($tdrcapr3["max"] > 0 ? secondsToTime($tdrcapr3["max"]) : 'data saknas') . '</dd>
                 </dl>
-                <h4>100 dagar</h4>
+                <h4>100 dagar tillbaka</h4>
                 <dl class="dl-horizontal">
                     <dt>Minsta tid</dt>
                     <dd>' . ($tdrcapr100["min"] > 0 ? secondsToTime($tdrcapr100["min"]) : 'data saknas') . '</dd>

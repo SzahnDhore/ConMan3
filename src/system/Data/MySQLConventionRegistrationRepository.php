@@ -136,7 +136,7 @@ class MySQLConventionRegistrationRepository implements IConventionRegistrationRe
     {
         if (!is_numeric($daysBackInTime)) { return false; }
 
-        $db_request = 'SELECT * FROM (SELECT TIME_TO_SEC (TIMEDIFF(`payment_registered`, `date_created`)) as diff FROM `szcm3_convention_registrations` WHERE `date_created` > now() - INTERVAL ? DAY ) as a WHERE a.diff is not NULL;';
+        $db_request = 'SELECT * FROM (SELECT TIME_TO_SEC (TIMEDIFF(`payment_registered`, `date_created`)) as diff FROM `szcm3_convention_registrations` WHERE `payment_registered` > now() - INTERVAL ? DAY ) as a WHERE a.diff is not NULL;';
         $statistics = Data\Database::read_raw_sql($db_request, array($daysBackInTime));
         if (empty($statistics)) { return array('min' => 0, 'max' => 0, 'average' => 0); }
         $sum = 0;
