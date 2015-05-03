@@ -111,7 +111,7 @@ if ($event_info !== false) {
                 <div class="modal-body">
                     <div class="row">
                         <div class="form-group col-xs-12">
-                            <p>Är du sjukt säker på att du verk&shy;ligen verk&shy;ligen vill ta bort det här arr&shy;ange&shy;manget? Det går inte att ångra sig efteråt näm&shy;ligen. Visst, det går ju alltid att lägga in det igen, men då måste du ju veta precis vad som stod i texten eller få den som först skrev in den att skriva om den. Fast det är klart; måste det bort så måste det ju bort, så känn dig fri att plocka bort arr&shy;ange&shy;manget för all fram&shy;tid. Om du verk&shy;ligen vill.</p>
+                            <p>Är du helt säker på att du verk&shy;ligen verk&shy;ligen vill ta bort det här arr&shy;ange&shy;manget? Det går inte att ångra sig efteråt näm&shy;ligen. Visst, det går ju alltid att lägga in det igen, men då måste du ju veta precis vad som stod i texten eller få den som först skrev in den att skriva om den. Fast det är klart; måste det bort så måste det ju bort, så känn dig fri att plocka bort arr&shy;ange&shy;manget för all fram&shy;tid. Om du verk&shy;ligen vill.</p>
                             <input type="hidden" name="events_id" value="' . $event_info['events_id'] . '" />
                         </div>
                     </div>
