@@ -20,6 +20,10 @@ $contents['head_local'] = '';
 
 $contents['content_top'] = '';
 
-$contents['content_main'] = '<p>Godkänn medlemsuppgifter här.</p>';
+$contents['content_main'] = '<h1>Godkänn medlemsuppgifter här.</h1>
+    <p class="lead">Godkänn medlemsuppgifter för systemets användare här.</p>
+    <div class="alert alert-warning" role="alert">
+        <p><strong>OBS!</strong> Denna sidan är inte implementerad ännu, och du kan därmed inte se några medlemsuppgifter ännu.</p>
+    </div>';
 
 $contents['content_bottom'] = '';

@@ -122,7 +122,7 @@ $contents['content_main'] = (empty($registration_content_array) ?
         <h3>Jag betalade nyss, men står ändå som obetald. Varför?</h3>
             <p>Registreringen av inbetalningar sker manuellt och det kan dröja något innan vi har hunnit hantera din betalning. Om det dröjer mer än två veckor, hör gärna av dig till oss så kollar vi upp vad som hänt.</p>
         <h3>Jag betalade i förväg. Får jag rabatt då?</h3>
-            <p>Det kommer att finnas ett rabattsystem för de som betalar in hela summan i förväg. Vilka datum som gäller kommer att dyka upp när de är beslutade. När vi kontrollerar betalningsdatumen så är det bankens registreringsdatum av betalningen som gäller och inget annat.</p>
+            <p>Om du föranmäler och betalar för hela konventet senast 25 Juni 2015 får ni 50 kr rabatt på konventsinträdet om ni väljer att delta hela konventet. För dagspass finns ingen rabatt vid förbetalning.</p>
     </div>
 </div>');
 
