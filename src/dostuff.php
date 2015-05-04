@@ -688,7 +688,7 @@ class Dostuff
         // Prepare the new user information.
         $userData = Dostuff::stripPrefixesForAllKeys($POST_DATA, 'form_profile_');
         $userData['country'] = 'Sweden';
-        $userData['male'] = $userData['male'];
+        $userData['male'] = $userData['gender'];
         unset($userData['gender']);
         $stagedChanges = Data\User::getStagedChangesForUserId($currentUserId);
         // Check if the user already have staged changes, if not, stage the new changes.
