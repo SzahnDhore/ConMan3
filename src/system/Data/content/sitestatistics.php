@@ -6,6 +6,7 @@ use \Szandor\ConMan\Data as Data;
 use \Szandor\ConMan\Logic as Logic;
 use \Szandor\ConMan\View as View;
 
+$ur = new Data\MySQLUserRepository();
 $crr = new Data\MySQLConventionRegistrationRepository();
 $tdrcapr3 = $crr->getTimeDifferenceRegistrationCreatedAndPaymentRegistered(3);
 $tdrcapr1 = $crr->getTimeDifferenceRegistrationCreatedAndPaymentRegistered(1);
@@ -102,6 +103,13 @@ $contents['content_main'] = '<div class="row">
                 <h3>Typer av anmälningar</h3>
                 <dl class="dl-horizontal">
                     ' . $registrationsPerDayHTML . '
+                </dl>
+            </div>
+            <div class="col-sm-6 col-xs-4">
+                <h3>Användare</h3>
+                <dl class="dl-horizontal">
+                    <dt>Totalt antal</dt>
+                    <dd>' . $ur->getNumberOfUsers() . ' st</dd>
                 </dl>
             </div>
         </div>

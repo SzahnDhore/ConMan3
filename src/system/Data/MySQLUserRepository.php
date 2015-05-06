@@ -61,6 +61,13 @@ class MySQLUserRepository implements IUserRepository
             return is_numeric($result);
         }
     }
+    
+    public function getNumberOfUsers()
+    {
+        $users_request = 'SELECT COUNT(*) FROM `szcm3_users`;';
+        $tmp = Data\Database::read_raw_sql($users_request, array());
+        return $tmp[0]['COUNT(*)'];
+    }
 
 }
 

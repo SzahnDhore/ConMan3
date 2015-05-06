@@ -7,4 +7,5 @@ interface IUserRepository
     public function getEmailByUserId($userId);
     public function getNumberOfUnconfirmedUserDetails();
     public function stageNewDetailsForUser($userData);
+    public function getNumberOfUsers();
 }
