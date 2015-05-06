@@ -114,7 +114,7 @@ $contents['content_main'] = (empty($registration_content_array) ?
         <h2>FAQ</h2>
         <h3>Betalning</h3>
             <p>Förbetalning sker till vårt plusgirokonto: 165 79 33-6</p>
-            <p>För att betalningen för en föranmälan ska godkännas, måste den vara oss tillhanda innan 2015-06-27.</p>
+            <p>För att betalningen för en föranmälan ska godkännas, måste den vara oss tillhanda innan 2015-07-02.</p>
             <p>Glöm inte att du måste ange ditt personnummer (inte bara födelsedatumet) i meddelandefältet! Gör du inte det kan vi inte hitta din betalning och du måste betala inträde igen för att få komma in.</p>
         <h3>Jag skrev inte mitt personnummer på inbetalningen</h3>
             <p>Då vet vi inte vilken inbetalning som är din och kan inte registrera dig som betald. Tack för din donation till föreningen!</p>
