@@ -183,23 +183,6 @@ class User
     }
 
     /**
-     * Stages new details for a user. Returns true if ok, false if something fails.
-     */
-    public static function stageNewDetailsForUser($userData)
-    {
-        if (empty($userData)) {
-            return false;
-        } else {
-            $users_request = array(
-                'table' => 'user_staged_changes',
-                'data' => array($userData)
-            );
-            $result = Data\Database::create($users_request, false);
-            return is_numeric($result);
-        }
-    }
-    
-    /**
      * Stages an update for the details for a user. Returns true if ok, false if something fails.
      */
     public static function updateStagedDetailsForUser($userData)

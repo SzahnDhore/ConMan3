@@ -30,5 +30,37 @@ class MySQLUserRepository implements IUserRepository
         return $tmp[0]['COUNT(*)'];
     }
 
+    /**
+     * Stages new details for a user. Returns true if ok, false if something fails.
+     */
+    public function stageNewDetailsForUser($userData)
+    {
+        if (empty($userData)) {
+            return false;
+        } else {
+            $male = 1;
+            if (isset($userData['male'])) { $male = $userData['male']; }
+            if (isset($userData['gender'])) { $male = $userData['gender']; }
+            $users_request = array(
+                'table' => 'user_staged_changes',
+                'data' => array( array(
+                    'given_name' => $userData['given_name'],
+                    'family_name' => $userData['family_name'],
+                    'address' => $userData['address'],
+                    'postal_code' => $userData['postal_code'],
+                    'city' => $userData['city'],
+                    'male' => $male,
+                    'national_id_number' => $userData['national_id_number'],
+                    'country' => $userData['country'],
+                    'phone_number' => $userData['phone_number'],
+                    'email' => $userData['email'],
+                    'users_id' => $userData['users_id']
+                ))
+            );
+            $result = Data\Database::create($users_request, false);
+            return is_numeric($result);
+        }
+    }
+
 }
 

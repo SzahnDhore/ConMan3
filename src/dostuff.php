@@ -97,7 +97,7 @@ switch ($_POST['submit_dostuff']) {
     case 'update_profile' :
         $go_to_page = Dostuff::update_profile($_SESSION['user']['info']['data']['id'],
                                 $_SESSION['user']['info']['data']['username'],
-                                $_POST);
+                                $_POST, $ur);
         break;
 
     case 'register_convention' :
@@ -625,7 +625,7 @@ class Dostuff
     /**
      * Updates the profile.
      */
-    public static function update_profile($currentUserId, $currentUsername, $POST_DATA)
+    public static function update_profile($currentUserId, $currentUsername, $POST_DATA, Data\IUserRepository $ur)
     {
         $return_url = 'index.php?page=minprofil';
         
@@ -699,7 +699,7 @@ class Dostuff
                 return $return_url;
             }
         } else {
-            if (!Data\User::stageNewDetailsForUser($userData)) {
+            if (!$ur->stageNewDetailsForUser($userData)) {
                 View\Alerts::set('warning', 'Dina nya personuppgifter gick inte spara. Försök igen senare.');
                 return $return_url;
             }
