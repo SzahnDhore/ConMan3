@@ -76,22 +76,22 @@ switch ($_POST['submit_dostuff']) {
 
     case 'social_login_return' :
         Dostuff::social_login($_GET['provider']);
-        $go_to_page = 'index.php?page=arrangemang';
+        $go_to_page = 'index.php?page=anmalningar';
         break;
 
     case 'social_login_google' :
         Dostuff::social_login('Google');
-        $go_to_page = 'index.php?page=arrangemang';
+        $go_to_page = 'index.php?page=anmalningar';
         break;
 
     case 'social_login_twitter' :
         Dostuff::social_login('Twitter');
-        $go_to_page = 'index.php?page=arrangemang';
+        $go_to_page = 'index.php?page=anmalningar';
         break;
 
     case 'social_login_facebook' :
         Dostuff::social_login('Facebook');
-        $go_to_page = 'index.php?page=arrangemang';
+        $go_to_page = 'index.php?page=anmalningar';
         break;
 
     case 'update_profile' :
@@ -454,7 +454,7 @@ class Dostuff
             );
             Data\Database::create($create_details_request, false);
 
-            $return_url = '?new_user_submit_success=true';
+            $return_url = '?page=anmalningar';
 
             Data\Login::tryLogin($_POST['new_user_username'], $_POST['new_user_password']);
             View\Alerts::set('success', 'Du har skapat en ny användare med användarnamn "' . $_POST['new_user_username'] . '". Du är automagiskt inloggad.', 'Lycka och glädje!');
@@ -475,7 +475,7 @@ class Dostuff
         $login_was_a_success = Data\Login::tryLogin($username, $password);
         $go_to_page = $_POST['user_login_url'];
         
-        if ($login_was_a_success && empty($go_to_page)) { $go_to_page = 'index.php?page=minprofil'; }
+        if ($login_was_a_success && empty($go_to_page)) { $go_to_page = 'index.php?page=anmalningar'; }
         
         return $go_to_page;
     }
