@@ -61,12 +61,122 @@ class MySQLUserRepository implements IUserRepository
             return is_numeric($result);
         }
     }
-    
+
     public function getNumberOfUsers()
     {
         $users_request = 'SELECT COUNT(*) FROM `szcm3_users`;';
         $tmp = Data\Database::read_raw_sql($users_request, array());
         return $tmp[0]['COUNT(*)'];
+    }
+
+    public function getUsersForGroups()
+    {
+        $users_request = 'SELECT * FROM (
+                            SELECT szcm3_user_groups.user_groups_id, 
+                                   szcm3_user_groups.description,
+                                   szcm3_users.users_id,
+                                   szcm3_users.username
+                            FROM szcm3_user_groups 
+                            LEFT JOIN szcm3_user_and_group_connection ON
+                                szcm3_user_groups.user_groups_id=
+                                szcm3_user_and_group_connection.user_groups_id
+                            LEFT JOIN szcm3_users ON
+                                szcm3_user_and_group_connection.users_id=
+                                szcm3_users.users_id
+                            ORDER BY szcm3_user_groups.description, username)
+                            AS tbl
+                            WHERE
+                                tbl.username is not NULL
+                            ORDER BY description, username ASC;';
+        $raw_data = Data\Database::read_raw_sql($users_request, array());
+        $map = [];
+        foreach ($raw_data as $row) {
+            $group_index = -1;
+            foreach ($map as $key => $value) {
+                if ($value['user_groups_id'] == $row['user_groups_id']) {
+                    $group_index = $key;
+                    break; 
+                }
+            }
+            
+            if ($group_index >= 0) {
+                $map[$group_index]['users'][] = array(
+                    'users_id' => $row['users_id'],
+                    'username' => $row['username']
+                );
+            } else {
+                $map[] = array('user_groups_id' => $row['user_groups_id'],
+                               'description' => $row['description'],
+                               'users' => array( array(
+                                    'users_id' => $row['users_id'],
+                                    'username' => $row['username']
+                        )));
+            }
+            
+        }
+
+        return $map;
+    }
+    
+    public function getUsernamesAndId()
+    {
+        $users_request = 'SELECT users_id, username FROM `szcm3_users` ORDER BY username ASC;';
+        return Data\Database::read_raw_sql($users_request, array());
+    }
+    
+    public function getGroupnamesAndId()
+    {
+        $groups_request = 'SELECT user_groups_id, description FROM `szcm3_user_groups` ORDER BY description ASC;';
+        return Data\Database::read_raw_sql($groups_request, array());
+    }
+    
+    public function findUserGroupConnection($userId, $groupId)
+    {
+        $connection_request = array(
+            'table' => 'user_and_group_connection',
+            'limit' => 1,
+            'where' => array(
+                'query' => 'and',
+                'col' => array(
+                    'users_id',
+                    'user_groups_id'
+                ),
+                'values' => array(
+                    $userId,
+                    $groupId,
+                ),
+            )
+        );
+
+        return Data\Database::read($connection_request, false);
+    }
+
+    public function addUserToGroup($userId, $groupId)
+    {
+        // Check if user is already added.
+        if (!empty(self::findUserGroupConnection($userId, $groupId))) { return false; }
+
+        $connection_request = array(
+                'table' => 'user_and_group_connection',
+                'data' => array( array(
+                    'users_id' => $userId,
+                    'user_groups_id' => $groupId
+                ))
+            );
+        $result = Data\Database::create($connection_request, false);
+        return is_numeric($result);
+    }
+    
+    public function removeUserFromGroup($userId, $groupId)
+    {
+        $userGroupConn = self::findUserGroupConnection($userId, $groupId);
+        if (empty($userGroupConn)) { return; }
+
+        $delete_request = array(
+            'table' => 'user_and_group_connection',
+            'id' => $userGroupConn[0]['user_and_group_connection_id']
+        );
+        Data\Database::delete($delete_request, false);
     }
 
 }

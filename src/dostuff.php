@@ -110,11 +110,22 @@ switch ($_POST['submit_dostuff']) {
         Dostuff::confirm_payment($_POST, $crr, $ur);
         $go_to_page = 'index.php?page=confirmpayments';
         break;
+
     case 'payment_dismissed' :
         Dostuff::dismiss_payment($_POST, $crr, $ur);
         $go_to_page = 'index.php?page=confirmpayments';
         break;
 
+    case 'add_user_to_group' :
+        Dostuff::add_user_to_group($_POST, $ur);
+        $go_to_page = 'index.php?page=usersandgroups';
+        break;
+
+    case 'remove_user_from_group' :
+        Dostuff::remove_user_from_group($_GET, $ur);
+        $go_to_page = 'index.php?page=usersandgroups';
+        break;
+        
         default :
         break;
 }
@@ -759,7 +770,39 @@ class Dostuff
             Data\MailSender::notifyUserPaymentDismissed($email);
         }
     }
-    
+
+    public static function add_user_to_group($POST_DATA, Data\IUserRepository $ur)
+    {
+        if (!in_array('PERM_ADD_USER_TO_GROUP', $_SESSION['user']['info']['permissions'], true)) { return; }
+        if (isset($POST_DATA['add_user_to_group_user']) && is_numeric($POST_DATA['add_user_to_group_user']) &&
+            isset($POST_DATA['add_user_to_group_group']) && is_numeric($POST_DATA['add_user_to_group_group']))
+        {
+            if ($ur->addUserToGroup($POST_DATA['add_user_to_group_user'], $POST_DATA['add_user_to_group_group']))
+            {
+                View\Alerts::set('success', 'Användaren har nu lagts till.');
+            }
+            else
+            {
+                View\Alerts::set('warning', "Användaren finns redan i gruppen eller har det blivit ett okänt fel.");
+            }
+            return;
+        }
+        View\Alerts::set('warning', "Du måste välja en användare och grupp.");
+    }
+
+    public static function remove_user_from_group($GET_DATA, Data\IUserRepository $ur)
+    {
+        if (!in_array('PERM_REMOVE_USER_FROM_GROUP', $_SESSION['user']['info']['permissions'], true)) { return; }
+        if (isset($GET_DATA['users_id']) && is_numeric($GET_DATA['users_id']) &&
+            isset($GET_DATA['group_id']) && is_numeric($GET_DATA['group_id']))
+        {
+            if ($ur->removeUserFromGroup($GET_DATA['users_id'], $GET_DATA['group_id']))
+            {
+                View\Alerts::set('success', 'Användaren har nu tagits bort från gruppen.');
+            }
+        }
+    }
+
     private static function validateInput($POST_DATA, $validation, $error_text, $exceptions,
                                           $return_url, $prefix_for_success) {
         foreach ($validation as $item => $value) {
