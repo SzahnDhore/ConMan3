@@ -13,10 +13,14 @@ $panelContent = [];
 foreach ($usersandgroups as $key => $group) {
     $usersInGroup = [];
     foreach ($group['users'] as $user) {
-        $usersInGroup[] = '<li>' . $user['username'] . 
-            ' <a href="dostuff.php?submit_dostuff=remove_user_from_group&users_id=' . 
-            $user['users_id'] . '&group_id=' . $group['user_groups_id'] . 
-            '"><i class="fa fa-times fa-dark"></i></a></li>';
+        if ($group['description'] == 'regular user') {
+            $usersInGroup[] = '<li>' . $user['username'] . '</li>';
+        } else {
+            $usersInGroup[] = '<li>' . $user['username'] . 
+                ' <a href="dostuff.php?submit_dostuff=remove_user_from_group&users_id=' . 
+                $user['users_id'] . '&group_id=' . $group['user_groups_id'] . 
+                '"><i class="fa fa-times fa-dark"></i></a></li>';
+        }
     }
 
     $panelContent[] = '
