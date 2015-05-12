@@ -24,8 +24,22 @@ The basic idea is to build a solid system for managing visitors and events at an
 
 ### Latest version
 
-#### v0.5 - 2015-04-23
+#### v0.6 - 2015-05-12
+##### Bugfixes
+* Changing personal details now works.
+* Changing gender now works.
+* Social login no longer fails.
 
+##### New features
+* New startpage for when the user has logged in.
+* Misc texts has been updated.
+* Added sleeping room to convention registration.
+* The footer has been updated.
+* Confirm payments has been implemented and the admin can change the registration if he/she needs to.
+
+### Earlier versions
+
+#### v0.5 - 2015-04-23
 ##### Bugfixes
 * Entering the wrong password does not always notify the user that it is wrong.
 * The page "arrangemang" crashes when no events exists.
@@ -40,8 +54,6 @@ The basic idea is to build a solid system for managing visitors and events at an
 * Changed to a role based permission system.
 * It is possible to sign up for the convention.
 * Added data validation for the page my profile.
-
-### Earlier versions
 
 #### v0.4 - 2015-02-26
 
