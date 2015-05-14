@@ -14,7 +14,8 @@
 {% if show_adminpage_confirm_payments or
       show_adminpage_confirm_updated_user_information or
       show_adminpage_view_statistics or
-      show_adminpage_view_users_and_groups %}
+      show_adminpage_view_users_and_groups or
+      show_adminpage_view_groups_and_permissions %}
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 <span class="fa-stack fa-lg">
@@ -43,7 +44,9 @@
                             {% if show_adminpage_view_users_and_groups %}
                                 <li><a href="{{ base_url }}index.php?page=usersandgroups">Användare och grupper</a></li>
                             {% endif %}
-                            
+                            {% if show_adminpage_view_groups_and_permissions %}
+                                <li><a href="{{ base_url }}index.php?page=groupsandpermissions">Grupper och rättigheter</a></li>
+                            {% endif %}
                             </ul>
                         </li>
 {% endif %}

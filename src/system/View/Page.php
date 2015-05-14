@@ -56,6 +56,9 @@ class Page
         $page_content['show_adminpage_view_users_and_groups'] = isset($_SESSION['user']) &&
                                                             in_array('admin', $_SESSION['user']['info']['groups']);
 
+        $page_content['show_adminpage_view_groups_and_permissions'] = isset($_SESSION['user']) &&
+                                                            in_array('admin', $_SESSION['user']['info']['groups']);
+
         $page_content['show_adminpage_nbr_of_tasks'] = 0;
         if ($page_content['show_adminpage_confirm_updated_user_information'])
         {

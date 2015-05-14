@@ -125,7 +125,17 @@ switch ($_POST['submit_dostuff']) {
         Dostuff::remove_user_from_group($_GET, $ur);
         $go_to_page = 'index.php?page=usersandgroups';
         break;
-        
+
+    case 'add_permission_to_group' :
+        Dostuff::add_permission_to_group($_POST, $ur);
+        $go_to_page = 'index.php?page=groupsandpermissions';
+        break;
+
+    case 'remove_permission_from_group' :
+        Dostuff::remove_permission_from_group($_GET, $ur);
+        $go_to_page = 'index.php?page=groupsandpermissions';
+        break;
+
         default :
         break;
 }
@@ -799,6 +809,38 @@ class Dostuff
             if ($ur->removeUserFromGroup($GET_DATA['users_id'], $GET_DATA['group_id']))
             {
                 View\Alerts::set('success', 'Användaren har nu tagits bort från gruppen.');
+            }
+        }
+    }
+
+    public static function add_permission_to_group($POST_DATA, Data\IUserRepository $ur)
+    {
+        if (!in_array('PERM_ADD_PERMISSION_TO_GROUP', $_SESSION['user']['info']['permissions'], true)) { return; }
+        if (isset($POST_DATA['add_permission_to_group_permission']) && is_numeric($POST_DATA['add_permission_to_group_permission']) &&
+            isset($POST_DATA['add_permission_to_group_group']) && is_numeric($POST_DATA['add_permission_to_group_group']))
+        {
+            if ($ur->addPermissionToGroup($POST_DATA['add_permission_to_group_permission'], $POST_DATA['add_permission_to_group_group']))
+            {
+                View\Alerts::set('success', 'Rättigheten har nu lagts till.');
+            }
+            else
+            {
+                View\Alerts::set('warning', "Rättigheten finns redan i gruppen eller har det blivit ett okänt fel.");
+            }
+            return;
+        }
+        View\Alerts::set('warning', "Du måste välja en rättighet och grupp.");
+    }
+
+    public static function remove_permission_from_group($GET_DATA, Data\IUserRepository $ur)
+    {
+        if (!in_array('PERM_REMOVE_PERMISSION_FROM_GROUP', $_SESSION['user']['info']['permissions'], true)) { return; }
+        if (isset($GET_DATA['permission_id']) && is_numeric($GET_DATA['permission_id']) &&
+            isset($GET_DATA['group_id']) && is_numeric($GET_DATA['group_id']))
+        {
+            if ($ur->removePermissionFromGroup($GET_DATA['permission_id'], $GET_DATA['group_id']))
+            {
+                View\Alerts::set('success', 'Rättigheten har nu tagits bort från gruppen.');
             }
         }
     }

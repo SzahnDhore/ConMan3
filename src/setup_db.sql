@@ -251,6 +251,7 @@ INSERT INTO `szcm3_user_groups`(`user_groups_id`, `date_created`, `date_updated`
 INSERT INTO `szcm3_user_groups`(`user_groups_id`, `date_created`, `date_updated`, `description`) VALUES (2,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'stab');
 INSERT INTO `szcm3_user_groups`(`user_groups_id`, `date_created`, `date_updated`, `description`) VALUES (3,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'admin');
 INSERT INTO `szcm3_user_groups`(`user_groups_id`, `date_created`, `date_updated`, `description`) VALUES (4,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'economist');
+INSERT INTO `szcm3_user_groups`(`user_groups_id`, `date_created`, `date_updated`, `description`) VALUES (5,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'reception');
 
 /* permissions */
 INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `date_created`, `date_updated`, `description`) VALUES (1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'PERM_VIEW_ALL_EVENTS');
@@ -263,6 +264,8 @@ INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `date_cr
 INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `date_created`, `date_updated`, `description`) VALUES (8,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'PERM_COMFIRM_USER_PAYMENTS');
 INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `date_created`, `date_updated`, `description`) VALUES (9,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'PERM_ADD_USER_TO_GROUP');
 INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `date_created`, `date_updated`, `description`) VALUES (10,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'PERM_REMOVE_USER_FROM_GROUP');
+INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `date_created`, `date_updated`, `description`) VALUES (11,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'PERM_REMOVE_PERMISSION_FROM_GROUP');
+INSERT INTO `szcm3_user_group_permissions`(`user_group_permissions_id`, `date_created`, `date_updated`, `description`) VALUES (12,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'PERM_ADD_PERMISSION_TO_GROUP');
 
 INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (2,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1);
 INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (2,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,2);
@@ -274,3 +277,7 @@ INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`,
 INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (4,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,8);
 INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (3,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,9);
 INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (3,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,10);
+INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (3,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,11);
+INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (3,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,12);
+INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (5,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,7);
+INSERT INTO `szcm3_user_group_and_group_permission_connection`(`user_groups_id`, `date_created`, `date_updated`, `user_group_permissions_id`) VALUES (5,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,8);

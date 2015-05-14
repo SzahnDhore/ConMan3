@@ -71,11 +71,10 @@ class MySQLUserRepository implements IUserRepository
 
     public function getUsersForGroups()
     {
-        $users_request = 'SELECT * FROM (
-                            SELECT szcm3_user_groups.user_groups_id, 
-                                   szcm3_user_groups.description,
-                                   szcm3_users.users_id,
-                                   szcm3_users.username
+        $users_request = '  SELECT szcm3_user_groups.user_groups_id, 
+                                szcm3_user_groups.description,
+                                szcm3_users.users_id,
+                                szcm3_users.username
                             FROM szcm3_user_groups 
                             LEFT JOIN szcm3_user_and_group_connection ON
                                 szcm3_user_groups.user_groups_id=
@@ -83,11 +82,7 @@ class MySQLUserRepository implements IUserRepository
                             LEFT JOIN szcm3_users ON
                                 szcm3_user_and_group_connection.users_id=
                                 szcm3_users.users_id
-                            ORDER BY szcm3_user_groups.description, username)
-                            AS tbl
-                            WHERE
-                                tbl.username is not NULL
-                            ORDER BY description, username ASC;';
+                            ORDER BY szcm3_user_groups.description, username ASC;';
         $raw_data = Data\Database::read_raw_sql($users_request, array());
         $map = [];
         foreach ($raw_data as $row) {
@@ -107,29 +102,38 @@ class MySQLUserRepository implements IUserRepository
             } else {
                 $map[] = array('user_groups_id' => $row['user_groups_id'],
                                'description' => $row['description'],
-                               'users' => array( array(
-                                    'users_id' => $row['users_id'],
-                                    'username' => $row['username']
-                        )));
+                               'users' => array());
+                if (!is_null($row['users_id']) && !is_null($row['username']))
+                {
+                    $map[count($map)-1]['users'][] = array(
+                        'users_id' => $row['users_id'],
+                        'username' => $row['username']
+                    );
+                }
             }
-            
         }
 
         return $map;
     }
-    
+
     public function getUsernamesAndId()
     {
         $users_request = 'SELECT users_id, username FROM `szcm3_users` ORDER BY username ASC;';
         return Data\Database::read_raw_sql($users_request, array());
     }
-    
+
     public function getGroupnamesAndId()
     {
         $groups_request = 'SELECT user_groups_id, description FROM `szcm3_user_groups` ORDER BY description ASC;';
         return Data\Database::read_raw_sql($groups_request, array());
     }
-    
+
+    public function getPermissionnamesAndId()
+    {
+        $permissions_request = 'SELECT user_group_permissions_id, description FROM `szcm3_user_group_permissions` ORDER BY description ASC;';
+        return Data\Database::read_raw_sql($permissions_request, array());
+    }
+
     public function findUserGroupConnection($userId, $groupId)
     {
         $connection_request = array(
@@ -143,6 +147,27 @@ class MySQLUserRepository implements IUserRepository
                 ),
                 'values' => array(
                     $userId,
+                    $groupId,
+                ),
+            )
+        );
+
+        return Data\Database::read($connection_request, false);
+    }
+
+    public function findPermissionGroupConnection($permissionId, $groupId)
+    {
+        $connection_request = array(
+            'table' => 'user_group_and_group_permission_connection',
+            'limit' => 1,
+            'where' => array(
+                'query' => 'and',
+                'col' => array(
+                    'user_group_permissions_id',
+                    'user_groups_id'
+                ),
+                'values' => array(
+                    $permissionId,
                     $groupId,
                 ),
             )
@@ -166,7 +191,23 @@ class MySQLUserRepository implements IUserRepository
         $result = Data\Database::create($connection_request, false);
         return is_numeric($result);
     }
-    
+
+    public function addPermissionToGroup($permissionId, $groupId)
+    {
+        // Check if permission is already added.
+        if (!empty(self::findPermissionGroupConnection($permissionId, $groupId))) { return false; }
+
+        $connection_request = array(
+                'table' => 'user_group_and_group_permission_connection',
+                'data' => array( array(
+                    'user_group_permissions_id' => $permissionId,
+                    'user_groups_id' => $groupId
+                ))
+            );
+        $result = Data\Database::create($connection_request, false);
+        return is_numeric($result);
+    }
+
     public function removeUserFromGroup($userId, $groupId)
     {
         $userGroupConn = self::findUserGroupConnection($userId, $groupId);
@@ -177,6 +218,66 @@ class MySQLUserRepository implements IUserRepository
             'id' => $userGroupConn[0]['user_and_group_connection_id']
         );
         Data\Database::delete($delete_request, false);
+    }
+
+    public function removePermissionFromGroup($permissionId, $groupId)
+    {
+        $permGroupConn = self::findPermissionGroupConnection($permissionId, $groupId);
+        if (empty($permGroupConn)) { return; }
+
+        $delete_request = array(
+            'table' => 'user_group_and_group_permission_connection',
+            'id' => $permGroupConn[0]['user_group_and_group_permission_connection_id']
+        );
+        Data\Database::delete($delete_request, false);
+    }
+
+    public function getPermissionsForGroups()
+    {
+        $groups_request = ' SELECT szcm3_user_groups.user_groups_id,
+                                szcm3_user_groups.description as group_desc,
+                                szcm3_user_group_permissions.user_group_permissions_id,
+                                szcm3_user_group_permissions.description as perm_desc
+                            FROM szcm3_user_groups 
+                            LEFT JOIN szcm3_user_group_and_group_permission_connection ON
+                                szcm3_user_groups.user_groups_id=
+                                szcm3_user_group_and_group_permission_connection.user_groups_id
+                            LEFT JOIN szcm3_user_group_permissions ON
+                                szcm3_user_group_and_group_permission_connection.user_group_permissions_id=
+                                szcm3_user_group_permissions.user_group_permissions_id
+                            ORDER BY szcm3_user_groups.description, szcm3_user_group_permissions.description ASC;';
+        $raw_data = Data\Database::read_raw_sql($groups_request, array());
+        $map = [];
+        foreach ($raw_data as $row) {
+            $group_index = -1;
+            foreach ($map as $key => $value) {
+                if ($value['user_groups_id'] == $row['user_groups_id']) {
+                    $group_index = $key;
+                    break; 
+                }
+            }
+            
+            if ($group_index >= 0) {
+                $map[$group_index]['permissions'][] = array(
+                    'user_group_permissions_id' => $row['user_group_permissions_id'],
+                    'permission_description' => $row['perm_desc']
+                );
+            } else {
+                $map[] = array('user_groups_id' => $row['user_groups_id'],
+                               'description' => $row['group_desc'],
+                               'permissions' => array());
+                if (!is_null($row['user_group_permissions_id']) && !is_null($row['perm_desc']))
+                {
+                    $map[count($map)-1]['permissions'][] = array(
+                        'user_group_permissions_id' => $row['user_group_permissions_id'],
+                        'permission_description' => $row['perm_desc']
+                    );
+                }
+            }
+            
+        }
+
+        return $map;
     }
 
 }
