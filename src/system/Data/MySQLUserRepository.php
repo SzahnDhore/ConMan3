@@ -293,7 +293,8 @@ class MySQLUserRepository implements IUserRepository
 
         $user_data = Data\Database::read($users_request, false);
         // Only checking given_name and national_id_number is enough for now.
-        if (isset($user_data[0]['given_name']) && isset($user_data[0]['national_id_number'])) { return true; }
+        if (isset($user_data[0]['given_name']) && !empty($user_data[0]['given_name'])
+            && isset($user_data[0]['national_id_number']) && !empty($user_data[0]['national_id_number'])) { return true; }
 
         $user = new Data\User();
         return !empty($user->getStagedChangesForUserId($userId));
