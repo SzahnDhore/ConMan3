@@ -69,6 +69,8 @@ class Page
             $page_content['show_adminpage_nbr_of_tasks'] += $page_content['show_adminpage_nbr_of_unconfirmed_payments'];
         }
 
+        $page_content['show_only_my_profile'] = isset($_SESSION['user']) && !$ur->userHasEnteredUserDetails($_SESSION['user']['info']['data']['id']);
+
         $this->page_content = $page_content;
 
         $out = $template->render($page_content);

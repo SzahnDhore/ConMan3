@@ -1,6 +1,5 @@
 /*
- * This script does a basic setup of the database for version 0.5. If you need to modify any
- * table in newer releases, use altertable to modify the changes.
+ * This script does a basic setup of the database.
  */
 
 CREATE TABLE IF NOT EXISTS `szcm3_data_throttling` (

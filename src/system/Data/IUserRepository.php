@@ -19,4 +19,5 @@ interface IUserRepository
     public function removeUserFromGroup($userId, $groupId);
     public function removePermissionFromGroup($permissionId, $groupId);
     public function getPermissionsForGroups();
+    public function userHasEnteredUserDetails($userId);
 }

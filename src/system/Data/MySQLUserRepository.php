@@ -280,5 +280,24 @@ class MySQLUserRepository implements IUserRepository
         return $map;
     }
 
+    public function userHasEnteredUserDetails($userId)
+    {
+        $users_request = array(
+            'table' => 'user_details',
+            'limit' => 1,
+            'where' => array(
+                'col' => 'users_id',
+                'values' => $userId,
+            ),
+        );
+
+        $user_data = Data\Database::read($users_request, false);
+        // Only checking given_name and national_id_number is enough for now.
+        if (isset($user_data[0]['given_name']) && isset($user_data[0]['national_id_number'])) { return true; }
+
+        $user = new Data\User();
+        return !empty($user->getStagedChangesForUserId($userId));
+    }
+
 }
 

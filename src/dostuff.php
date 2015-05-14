@@ -67,31 +67,35 @@ switch ($_POST['submit_dostuff']) {
         break;
 
     case 'new_user_submit' :
-        $go_to_page = Dostuff::new_user_submit();
+        $go_to_page = getPageAfterLogin(Dostuff::new_user_submit(),
+                                        $_SESSION['user']['info']['data']['id'],
+                                        $crr, $ur);
         break;
 
     case 'user_login_submit' :
-        $go_to_page = Dostuff::user_login_submit();
+        $go_to_page = getPageAfterLogin(Dostuff::user_login_submit(),
+                                        $_SESSION['user']['info']['data']['id'],
+                                        $crr, $ur);
         break;
 
     case 'social_login_return' :
         Dostuff::social_login($_GET['provider']);
-        $go_to_page = 'index.php?page=anmalningar';
+        $go_to_page = getPageAfterLogin('', $_SESSION['user']['info']['data']['id'], $crr, $ur);
         break;
 
     case 'social_login_google' :
         Dostuff::social_login('Google');
-        $go_to_page = 'index.php?page=anmalningar';
+        $go_to_page = getPageAfterLogin('', $_SESSION['user']['info']['data']['id'], $crr, $ur);
         break;
 
     case 'social_login_twitter' :
         Dostuff::social_login('Twitter');
-        $go_to_page = 'index.php?page=anmalningar';
+        $go_to_page = getPageAfterLogin('', $_SESSION['user']['info']['data']['id'], $crr, $ur);
         break;
 
     case 'social_login_facebook' :
         Dostuff::social_login('Facebook');
-        $go_to_page = 'index.php?page=anmalningar';
+        $go_to_page = getPageAfterLogin('', $_SESSION['user']['info']['data']['id'], $crr, $ur);
         break;
 
     case 'update_profile' :
@@ -103,7 +107,7 @@ switch ($_POST['submit_dostuff']) {
     case 'register_convention' :
         Dostuff::register_convention($_SESSION['user']['info']['data']['id'],
                                         $_POST, $crr);
-        $go_to_page = 'index.php?page=anmalningar';
+        $go_to_page = getPageAfterLogin('', $_SESSION['user']['info']['data']['id'], $crr, $ur);
         break;
 
     case 'payment_confirmed' :
@@ -136,8 +140,27 @@ switch ($_POST['submit_dostuff']) {
         $go_to_page = 'index.php?page=groupsandpermissions';
         break;
 
-        default :
+    default :
         break;
+}
+
+function getPageAfterLogin($suggestedPage, $userId,
+                            Data\IConventionRegistrationRepository $crr,
+                            Data\IUserRepository $ur)
+{
+    if (!is_null($userId) && is_numeric($userId))
+    {
+        if (!$ur->userHasEnteredUserDetails($userId)) { return 'index.php?page=minprofil'; }
+        if (empty($crr->getRegistrationByUserId($userId))) { return 'index.php?page=anmalningar'; }
+    }
+
+    $goto_page = $suggestedPage;
+    if (empty($goto_page))
+    {
+        $goto_page = 'index.php?page=arrangemang';
+    }
+
+    return $goto_page;
 }
 
 /**
@@ -495,8 +518,9 @@ class Dostuff
 
         $login_was_a_success = Data\Login::tryLogin($username, $password);
         $go_to_page = $_POST['user_login_url'];
-        
-        if ($login_was_a_success && empty($go_to_page)) { $go_to_page = 'index.php?page=anmalningar'; }
+
+        /* let $go_to_page be empty and getPageAfterLogin() will figure out what page to visit. */
+        if ($login_was_a_success && empty($go_to_page)) {}
         
         return $go_to_page;
     }

@@ -30,6 +30,8 @@ foreach ($_GET as $key => $value) {
     }
 }
 
+$ur = new Data\MySQLUserRepository();
+
 /**
  * The following is simple contents.
  */
@@ -49,7 +51,10 @@ $contents['content_main'] = '
         <h1>Profilinformation för ' . $_SESSION['user']['info']['data']['username'] . '</h1>
         <p class="lead">Här kan du ändra din personliga information. Det är bra att se till att uppgifterna är aktuella.</p>' . ($user_has_staged_changes ? '<div class="alert alert-warning" role="alert">
                 <p><strong>OBS!</strong> Dina nya uppgifter måste godkännas av WSK innan de gäller i systemet. Om du har angivit en ny email, kan du alltså inte logga in med den innan den är godkänd. Om denna text inte syns nästa gång du besöker den här sidan, så har dina uppgifter blivit godkända.</p>
-            </div>' : '') . '        
+            </div>' : '') . '' . (
+        !$ur->userHasEnteredUserDetails($user_info['users_id']) ? '<div class="alert alert-info" role="alert">
+                <p><strong>OBS!</strong> Om ni är en butik som registrerar er, vänligen registrera ett konto per person som kommer delta på konventet.</p>
+            </div>' : '') . '
     </div>
 </div>
 <div class="row">
@@ -128,7 +133,7 @@ $contents['content_main'] = '
             <p>Vi behöver informationen av flera anledningar:</p>
             <p><strong>Konventets aktiviteter</strong> är generellt sett bara till för betalande deltagare. Därför behöver vi en lista på vilka som har betalat och för vad.</p>
             <p><strong>Räddningstjänsten</strong> behöver en namnlista uppsatt på allmänt tillgänglig plats på skolan över vilka personer som sover var. Därför är det också jätteviktigt att du anmäler dig som sovande på konventet. Folk som sover på konventet utan att ha anmält sig kan bli bötfällda.</p>
-            <p><strong>Sverok</strong> får en lista på alla föreningens medlemmar via eBas. Om du inte vill bli medlem i föreningen så hamnar du inte i eBas.</p>
+            <p><strong>Sverok</strong> får en lista på alla föreningens medlemmar via eBas. Om du inte vill bli medlem i föreningen så hamnar du inte i eBas, men vi behöver fortfarande dina personuppgifter.</p>
         <h3>Jag vill byta användarnamn - hur gör jag det?</h3>
             <p>Normalt sett kan du inte byta ditt användarnamn, men skicka ett mail till oss med en god motivering om varför så skall vi se vad vi kan göra.</p>
         <h3>Varför kan jag bara välja mellan två kön?</h3>

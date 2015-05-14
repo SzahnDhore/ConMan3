@@ -11,6 +11,8 @@
 {% if user_logged_in %}
                     <ul class="nav navbar-nav navbar-right">
 
+{% if not show_only_my_profile %}
+
 {% if show_adminpage_confirm_payments or
       show_adminpage_confirm_updated_user_information or
       show_adminpage_view_statistics or
@@ -50,6 +52,9 @@
                             </ul>
                         </li>
 {% endif %}
+
+{% endif %}
+
 {% if 1 == 1 %}
                         <li>
                             <a href="{{ base_url }}index.php?page=minprofil">
@@ -61,6 +66,7 @@
                             </a>
                         </li>
 {% endif %}
+{% if not show_only_my_profile %}
                         <li>
                             <a href="{{ base_url }}index.php?page=anmalningar">
                                 <span class="fa-stack fa-lg">
@@ -79,6 +85,7 @@
                                 <span class="hidden-sm"> Arrangemang</span>
                             </a>
                         </li>
+{% endif %}
                         <li>
                             <a href="{{ base_url }}index.php?logout=logout">
                                 <span class="fa-stack fa-lg">
