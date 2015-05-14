@@ -36,6 +36,19 @@ foreach ($registrations as $registration)
         }
     }
 
+    $national_id_number = '';
+    if (isset($registration['national_id_number']) && !empty($registration['national_id_number']))
+    {
+        $national_id_number = $registration['national_id_number'];
+    } else {
+        $user = new Data\User();
+        $stagedChanges = $user->getStagedChangesForUserId($registration['users_id']);
+        if ($stagedChanges !== false && isset($stagedChanges['national_id_number']))
+        {
+            $national_id_number = $stagedChanges['national_id_number'];
+        }
+    }
+
     $paymentRegistered = $registration['payment_registered'] != null;
     $registrations_body[] = '
             <form id="form_confirm_payment" name="form_confirm_payment" class="form-horizontal" action="dostuff.php" method="post">
@@ -61,7 +74,7 @@ foreach ($registrations as $registration)
                         <p>' . (!empty($registration['username']) ? $registration['username']: '&nbsp;') . '</p>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-2">
-                        <p>' . (!empty($registration['national_id_number']) ? $registration['national_id_number']: '&nbsp;') . '</p>
+                        <p>' . (!empty($national_id_number) ? $national_id_number: '&nbsp;') . '</p>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-7">
                         <p>' . (!empty($registration['email']) ? $registration['email']: '&nbsp;') . '</p>
