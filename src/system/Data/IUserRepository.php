@@ -7,6 +7,7 @@ interface IUserRepository
     public function getEmailByUserId($userId);
     public function getNumberOfUnconfirmedUserDetails();
     public function stageNewDetailsForUser($userData);
+    public function setNewDetailsForUser($userData);
     public function getNumberOfUsers();
     public function getUsersForGroups();
     public function getUsernamesAndId();
@@ -20,4 +21,7 @@ interface IUserRepository
     public function removePermissionFromGroup($permissionId, $groupId);
     public function getPermissionsForGroups();
     public function userHasEnteredUserDetails($userId);
+
+    public function getAllStagedUserDetails();
+    public function unstageUserDetails($userStagedChangesId);
 }

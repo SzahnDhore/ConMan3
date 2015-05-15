@@ -140,6 +140,16 @@ switch ($_POST['submit_dostuff']) {
         $go_to_page = 'index.php?page=groupsandpermissions';
         break;
 
+    case 'user_details_confirmed' :
+        Dostuff::user_details_confirmed($_POST, $ur);
+        $go_to_page = 'index.php?page=confirmstageduserdetails';
+        break;
+
+    case 'user_details_dismissed' :
+        Dostuff::user_details_dismissed($_POST, $ur);
+        $go_to_page = 'index.php?page=confirmstageduserdetails';
+        break;
+
     default :
         break;
 }
@@ -868,6 +878,25 @@ class Dostuff
             }
         }
     }
+
+    public static function user_details_confirmed($POST_DATA, Data\IUserRepository $ur)
+    {
+        $ur->setNewDetailsForUser(self::stripPrefixesForAllKeys($POST_DATA, 'form_confirm_user_details_'));
+        $ur->unstageUserDetails($POST_DATA['form_confirm_user_details_id']);
+        Data\MailSender::notifyUserPersonalDetailsConfirmed($POST_DATA['form_confirm_user_details_email']);
+
+        View\Alerts::set('success', 'Uppgifterna för användaren har godkänts.');
+    }
+
+    public static function user_details_dismissed($POST_DATA, Data\IUserRepository $ur)
+    {
+        Data\MailSender::notifyUserPersonalDetailsDismissed($ur->getEmailByUserId(
+                                                $POST_DATA['form_confirm_user_details_users_id']));
+        $ur->unstageUserDetails($POST_DATA['form_confirm_user_details_id']);
+
+        View\Alerts::set('warning', 'Uppgifterna för användaren har inte godkänts.');
+    }
+
 
     private static function validateInput($POST_DATA, $validation, $error_text, $exceptions,
                                           $return_url, $prefix_for_success) {

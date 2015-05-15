@@ -18,6 +18,7 @@ if (is_array($staged_changes) && !empty($staged_changes)) {
     $user_has_staged_changes = true;
 } else {
     $user_info = $_SESSION['user']['info']['details'];
+    $user_info['gender'] = $user_info['gender'] == 'Kvinna' ? '0' : '1';
     $user_info['email'] = $_SESSION['user']['info']['data']['email'];
     $user_info['users_id'] = $_SESSION['user']['info']['details']['id'];
     unset($user_info['id']);

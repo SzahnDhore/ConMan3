@@ -21,7 +21,6 @@ foreach ($entranceTypes as $key => $entrance)
                                 ', member_reduction: ' . $entrance['if_member_price_reduced_by']. ' }';
 }
 
-//die(var_dump($registrations));
 $registrations_body = [];
 $registrationsJavascriptData = [];
 foreach ($registrations as $registration)
@@ -128,9 +127,6 @@ foreach ($registrations as $registration)
                                 ', sleeping_room: ' . ($registration['sleeping_room'] == '1' ? 'true' : 'false') . ' }';
 }
 
-/**
- * The following is simple contents.
- */
 $contents['page_id'] = 'confirmpayments';
 $contents['date_created'] = gmdate("Y-m-d H:i:s", filemtime(__FILE__));
 $contents['date_changed'] = gmdate("Y-m-d H:i:s", filemtime(__FILE__));

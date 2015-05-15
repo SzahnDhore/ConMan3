@@ -62,6 +62,55 @@ class MySQLUserRepository implements IUserRepository
         }
     }
 
+    public function setNewDetailsForUser($userData)
+    {
+        if (empty($userData)) {
+            return false;
+        } else {
+            $request = array(
+                'table' => 'users',
+                'id' => $userData['users_id'],
+                'values' => array(
+                    'email' => $userData['email']
+                ),
+            );
+            Data\Database::update($request, false);
+
+            // Finding the index for user_details..
+            $request = array(
+                'table' => 'user_details',
+                'limit' => 1,
+                'select' => 'user_details_id',
+                'where' => array(
+                    'col' => 'users_id',
+                    'values' => $userData['users_id'],
+                ),
+            );
+            $user_data = Data\Database::read($request, false);
+
+            // Time to update!
+            $male = 1;
+            if (isset($userData['male'])) { $male = $userData['male']; }
+            if (isset($userData['gender'])) { $male = $userData['gender']; }
+            $request = array(
+                'table' => 'user_details',
+                'id' => $user_data[0]['user_details_id'],
+                'values' => array(
+                    'given_name' => $userData['given_name'],
+                    'family_name' => $userData['family_name'],
+                    'address' => $userData['address'],
+                    'postal_code' => $userData['postal_code'],
+                    'city' => $userData['city'],
+                    'male' => $male,
+                    'national_id_number' => $userData['national_id_number'],
+                    'country' => $userData['country'],
+                    'phone_number' => $userData['phone_number']
+                ),
+            );
+            Data\Database::update($request, false);
+        }
+    }
+
     public function getNumberOfUsers()
     {
         $users_request = 'SELECT COUNT(*) FROM `szcm3_users`;';
@@ -298,6 +347,38 @@ class MySQLUserRepository implements IUserRepository
 
         $user = new Data\User();
         return !empty($user->getStagedChangesForUserId($userId));
+    }
+
+    public function getAllStagedUserDetails()
+    {
+        $result = [];
+        $staged_changes_request = array('table' => 'user_staged_changes');
+        $result['staged_data'] = Data\Database::read($staged_changes_request, false);
+        
+        $current_user_data_request = ' SELECT szcm3_user_staged_changes.user_staged_changes_id,
+                                            szcm3_users.username, szcm3_users.email,
+                                            szcm3_user_details.*
+                                       FROM szcm3_user_staged_changes
+                                       LEFT JOIN szcm3_users ON
+                                            szcm3_user_staged_changes.users_id=
+                                            szcm3_users.users_id
+                                       LEFT JOIN szcm3_user_details ON
+                                            szcm3_user_staged_changes.users_id=
+                                            szcm3_user_details.users_id;';
+        $result['current_user_data'] = Data\Database::read_raw_sql($current_user_data_request, array());
+        
+        return $result;
+    }
+
+    public function unstageUserDetails($userStagedChangesId)
+    {
+        if (!is_numeric($userStagedChangesId)) { return; }
+
+        $delete_request = array(
+            'table' => 'user_staged_changes',
+            'id' => $userStagedChangesId
+        );
+        Data\Database::delete($delete_request, false);
     }
 
 }

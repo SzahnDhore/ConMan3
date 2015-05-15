@@ -34,7 +34,7 @@ class MailSender
         } else {
         }
     }
-    
+
     public static function notifyUserPaymentConfirmed($email) {
         // We assume mailsender has not be configured if the host is not set.
         if (empty(Settings::mailsender('host'))) { return; }
@@ -48,6 +48,7 @@ class MailSender
         } else {
         }
     }
+
     public static function notifyUserPaymentDismissed($email) {
         // We assume mailsender has not be configured if the host is not set.
         if (empty(Settings::mailsender('host'))) { return; }
@@ -56,6 +57,34 @@ class MailSender
         $mailsender->mail->addAddress($email);
         $mailsender->mail->Subject = 'WSK 2015 - betalning';
         $mailsender->mail->Body = 'Hej, din betalning för WSK 2015 är har inte blivit godkänd.';
+
+        if(!$mailsender->mail->send()) {
+        } else {
+        }
+    }
+
+    public static function notifyUserPersonalDetailsDismissed($email) {
+        // We assume mailsender has not be configured if the host is not set.
+        if (empty(Settings::mailsender('host'))) { return; }
+
+        $mailsender = new MailSender();
+        $mailsender->mail->addAddress($email);
+        $mailsender->mail->Subject = 'WSK 2015 - personuppgifter';
+        $mailsender->mail->Body = 'Hej, dina nya personuppgifter för WSK 2015 är har inte blivit godkända. Vänligen försök igen.';
+
+        if(!$mailsender->mail->send()) {
+        } else {
+        }
+    }
+
+    public static function notifyUserPersonalDetailsConfirmed($email) {
+        // We assume mailsender has not be configured if the host is not set.
+        if (empty(Settings::mailsender('host'))) { return; }
+
+        $mailsender = new MailSender();
+        $mailsender->mail->addAddress($email);
+        $mailsender->mail->Subject = 'WSK 2015 - personuppgifter';
+        $mailsender->mail->Body = 'Hej, dina nya personuppgifter för WSK 2015 är har blivit godkända.';
 
         if(!$mailsender->mail->send()) {
         } else {
