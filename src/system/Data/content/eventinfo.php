@@ -48,7 +48,7 @@ if ($event_info !== false) {
         </div>
         <div class="col-xs-12 col-sm-8 col-md-9">
             <p class="lead">' . $event_info['short_description'] . '</p>
-            <p>' . $event_info['long_description'] . '</p>
+            <p>' . nl2br($event_info['long_description']) . '</p>
         </div>
         <div class="col-xs-12 col-sm-4 col-md-3">
             <form role="form" id="event_status" name="event_status" action="' . Data\Settings::main('base_url') . 'dostuff.php" method="post">
