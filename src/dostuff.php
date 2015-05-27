@@ -656,7 +656,7 @@ class Dostuff
                         'postal_code' => $user['postal_code'],
                         'city' => $user['city'],
                         'male' => $user['male'],
-                        'national_id_number' => $user['national_id_number'],
+                        'national_id_number' => empty($user['national_id_number']) ? null : $user['national_id_number'],
                         'country' => $user['country'],
                         'phone_number' => $user['phone_number'],
                         'users_id' => $user['user_id'],
