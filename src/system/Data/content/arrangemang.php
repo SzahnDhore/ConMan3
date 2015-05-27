@@ -17,7 +17,7 @@ foreach ($all_events_raw as $key => $event) {
     }
     // $all_events[$event['event_type_order']][] = $event;
 }
-ksort($all_events);
+usort($all_events, function($a, $b) { return strcmp($a[0]["event_type_text"], $b[0]["event_type_text"]); });
 
 $schedule_request = array(
     'table' => 'event_schedule',
