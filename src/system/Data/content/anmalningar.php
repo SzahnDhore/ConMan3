@@ -40,7 +40,7 @@ $contents['content_main'] = (empty($registration_content_array) ?
 <div class="row">
     <div class="col-xs-12">
         <h1>Din anmälan till konventet</h1>
-        <p class="lead">Här kan du se vad du har anmält dig till på konventet. Du kan även se status för din anmälan och betalning. Väljer du att bli medlem, så behöver du fylla i dina personuppgifter på sidan "Min profil".</p>
+        <p class="lead">Här kan du se vad du har anmält dig till på konventet. Du kan även se status för din anmälan och betalning. Väljer du att bli medlem, behöver du fylla i dina personuppgifter på sidan "Min profil".</p>
         <hr />
     </div>
 </div>
@@ -49,7 +49,7 @@ $contents['content_main'] = (empty($registration_content_array) ?
         <div class="col-sm-6 col-xs-12">
             <div' . (isset($registration_data[0]['payment_registered']) && $registration_data[0]['payment_registered'] != null ? " style=\"display: none;\"" : "") . '>
                 <h3>Anmälan WSK 2015</h3>
-                <p>Barn under 13 år betalar endast medlemsavgift för inträde på konventet. Medlemmar får 150kr i rabatt på inträde.</p>
+                <p>Barn under 13 år betalar endast medlemsavgift för inträde på konventet. Medlemmar får 150kr i rabatt på inträde. Vid köp av årets konventsmugg ingår kaffe eller te under hela konventet.</p>
                 <dl class="dl-horizontal">
                     <div id="registration_entrance">
                     </div>
