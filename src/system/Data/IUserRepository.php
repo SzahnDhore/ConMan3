@@ -24,4 +24,6 @@ interface IUserRepository
 
     public function getAllStagedUserDetails();
     public function unstageUserDetails($userStagedChangesId);
+    
+    public function userIsOrganizer($userId);
 }

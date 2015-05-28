@@ -7,6 +7,7 @@ use \Szandor\ConMan\Logic as Logic;
 use \Szandor\ConMan\View as View;
 
 $crr = new Data\MySQLConventionRegistrationRepository();
+$ur = new Data\MySQLUserRepository();
 $registrations = $crr->getRegistrationData();
 
 $entranceTypes = $crr->getAllEntranceTypesForAllPeriods();
@@ -49,6 +50,7 @@ foreach ($registrations as $registration)
     }
 
     $paymentRegistered = $registration['payment_registered'] != null;
+    $userIsOrganizer = $ur->userIsOrganizer($registration['users_id']);
     $registrations_body[] = '
             <form id="form_confirm_payment" name="form_confirm_payment" class="form-horizontal" action="dostuff.php" method="post">
                 <input type="hidden" id="form_confirm_payment_convention_registrations_id" name="form_confirm_payment_convention_registrations_id" value="' . $registration['convention_registrations_id'] . '">
@@ -115,6 +117,10 @@ foreach ($registrations as $registration)
                             ($paymentRegistered ? " disabled=disabled" : "") .
                             '>Sovsal - 0kr</label>
                         </div>
+                    </div>
+
+                    <div class="col-xs-4 col-sm-4 col-md-2">
+                        ' . ($userIsOrganizer ? '<div class="alert alert-info" role="alert"><p><strong>OBS!</strong> Arrangör</p></div>' : '' ) . '
                     </div>
                 </div>
             </form>

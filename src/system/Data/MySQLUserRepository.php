@@ -381,5 +381,20 @@ class MySQLUserRepository implements IUserRepository
         Data\Database::delete($delete_request, false);
     }
 
+    public function userIsOrganizer($userId)
+    {
+        $request = array(
+            'table' => 'events',
+            'limit' => 1,
+            'where' => array(
+                'col' => 'contact',
+                'values' => $userId,
+            ),
+        );
+        $data = Data\Database::read($request, false);
+
+        return !empty($data);
+    }
+
 }
 
