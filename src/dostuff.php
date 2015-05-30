@@ -359,6 +359,14 @@ class Dostuff
         );
 
         Data\Database::update($request, false);
+        if ($unapprove == false)
+        {
+            $event = new Data\Event();
+            $data = $event->getData($_POST['events_id']);
+            $usr = new Data\User();
+            $data = $usr->getData($data['contact']);
+            Data\MailSender::notifyUserEventConfirmed($data['data']['email']);
+        }
 
         return $_POST['events_id'];
     }

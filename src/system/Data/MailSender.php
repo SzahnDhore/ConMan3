@@ -90,4 +90,18 @@ class MailSender
         } else {
         }
     }
+
+    public static function notifyUserEventConfirmed($email) {
+        // We assume mailsender has not be configured if the host is not set.
+        if (empty(Settings::mailsender('host'))) { return; }
+
+        $mailsender = new MailSender();
+        $mailsender->mail->addAddress($email);
+        $mailsender->mail->Subject = 'WSK 2015 - arrangemang';
+        $mailsender->mail->Body = 'Hej, ditt arrangemang på WSK 2015 har blivit godkänd.';
+
+        if(!$mailsender->mail->send()) {
+        } else {
+        }
+    }
 }
