@@ -283,7 +283,7 @@ class Dostuff
         );
         $event_title_check = Data\Database::read($event_title_request, false);
 
-        $validation['event_edit_title_duplicate'] = (isset($event_title_check[0]) ? false : true);
+        $validation['event_edit_title_duplicate'] = (isset($event_title_check[0]) && $_POST['event_id'] != $event_title_check[0]['events_id'] ? false : true);
         $validation['event_edit_title_length'] = (strlen($_POST['event_edit_title']) > 0 ? true : false);
         $validation['event_edit_type'] = (isset($_POST['event_edit_type']) ? true : false);
         $validation['event_edit_short_description'] = (strlen($_POST['event_edit_short_description']) > 0 ? true : false);
