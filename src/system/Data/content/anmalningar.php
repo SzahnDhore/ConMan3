@@ -114,7 +114,7 @@ $contents['content_main'] = (empty($registration_content_array) ?
         <h2>FAQ</h2>
         <h3>Betalning</h3>
             <p>Förbetalning sker till vårt plusgirokonto: 165 79 33-6</p>
-            <p>För att betalningen för en föranmälan ska godkännas, måste den vara oss tillhanda innan 2015-07-02.</p>
+            <p>För att betalningen för en föranmälan ska godkännas, måste den vara oss tillhanda senast 2015-06-26.</p>
             <p>Glöm inte att du måste ange ditt personnummer (inte bara födelsedatumet) i meddelandefältet! Gör du inte det kan vi inte hitta din betalning och du måste betala inträde igen för att få komma in.</p>
         <h3>Jag skrev inte mitt personnummer på inbetalningen</h3>
             <p>Då vet vi inte vilken inbetalning som är din och kan inte registrera dig som betald. Tack för din donation till föreningen!</p>
@@ -122,7 +122,7 @@ $contents['content_main'] = (empty($registration_content_array) ?
         <h3>Jag betalade nyss, men står ändå som obetald. Varför?</h3>
             <p>Registreringen av inbetalningar sker manuellt och det kan dröja något innan vi har hunnit hantera din betalning. Om det dröjer mer än två veckor, hör gärna av dig till oss så kollar vi upp vad som hänt.</p>
         <h3>Jag betalade i förväg. Får jag rabatt då?</h3>
-            <p>Om du föranmäler och betalar för hela konventet senast 25 Juni 2015 får ni 50 kr rabatt på konventsinträdet om ni väljer att delta hela konventet. För dagspass finns ingen rabatt vid förbetalning.</p>
+            <p>Om du föranmäler och betalar för hela konventet senast 26 Juni 2015 får ni 50 kr rabatt på konventsinträdet, om ni väljer att delta hela konventet. För dagspass finns ingen rabatt vid förbetalning.</p>
     </div>
 </div>');
 
