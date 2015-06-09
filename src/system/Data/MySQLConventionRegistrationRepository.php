@@ -96,6 +96,8 @@ class MySQLConventionRegistrationRepository implements IConventionRegistrationRe
                                 LEFT JOIN `szcm3_user_details` ON
                                     szcm3_convention_registrations.users_id=
                                     szcm3_user_details.users_id
+                                WHERE (payment_registered > now() - INTERVAL 3 DAY) OR
+                                    payment_registered is NULL
                             ORDER BY szcm3_convention_registrations.date_created DESC;';
             return Data\Database::read_raw_sql($registrations_request, array());
     }
