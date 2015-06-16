@@ -66,6 +66,16 @@ switch ($_POST['submit_dostuff']) {
         $go_to_page = 'index.php?page=eventinfo&event_id=' . $event_id;
         break;
 
+    case 'event_cancel_occassion' :
+        $event_id = Dostuff::event_cancel_occassion(false);
+        $go_to_page = 'index.php?page=eventinfo&event_id=' . $event_id;
+        break;
+
+    case 'event_delete_occassion' :
+        $event_id = Dostuff::event_delete_occassion(true);
+        $go_to_page = 'index.php?page=eventinfo&event_id=' . $event_id;
+        break;
+
     case 'new_user_submit' :
         $go_to_page = getPageAfterLogin(Dostuff::new_user_submit(),
                                         $_SESSION['user']['info']['data']['id'],
@@ -417,6 +427,38 @@ class Dostuff
         return $_POST['events_id'];
     }
 
+    public static function event_cancel_occassion($do_cancel = false)
+    {
+        $do_cancel = ($_GET['do_cancel'] === '1' ? true : false);
+        $event_schedule_id = $_GET['event_schedule_id'] * 1;
+        $event_id = $_GET['event_id'] * 1;
+
+        $request = array(
+            'table' => 'event_schedule',
+            'id' => $event_schedule_id,
+            'values' => array(
+                'cancelled' => ($do_cancel === false ? 0 : 1),
+            ),
+        );
+        Data\Database::update($request, false);
+
+        return $event_id;
+    }
+
+    public static function event_delete_occassion()
+    {
+        $event_schedule_id = $_GET['event_schedule_id'] * 1;
+        $event_id = $_GET['event_id'] * 1;
+
+        $event_request = array(
+            'table' => 'event_schedule',
+            'id' => $event_schedule_id,
+        );
+        Data\Database::delete($event_request, false);
+
+        return $event_id;
+    }
+
     /**
      * Adds a new user to the system.
      */
@@ -494,7 +536,7 @@ class Dostuff
                     )),
             );
             $user_id = Data\Database::create($create_user_request, false);
-            
+
             $regular_user_group_id = Data\Database::read(array(
                 'table' => 'user_groups',
                 'select' => 'user_groups_id',
@@ -539,7 +581,7 @@ class Dostuff
 
         /* let $go_to_page be empty and getPageAfterLogin() will figure out what page to visit. */
         if ($login_was_a_success && empty($go_to_page)) {}
-        
+
         return $go_to_page;
     }
 
@@ -639,7 +681,7 @@ class Dostuff
                     )),
             );
             $user['user_id'] = Data\Database::create($create_user_request, false);
-            
+
             $regular_user_group_id = Data\Database::read(array(
                 'table' => 'user_groups',
                 'select' => 'user_groups_id',
@@ -691,9 +733,9 @@ class Dostuff
     public static function update_profile($currentUserId, $currentUsername, $POST_DATA, Data\IUserRepository $ur)
     {
         $return_url = 'index.php?page=minprofil';
-        
+
         // Check permissions.
-        if ($POST_DATA['form_profile_users_id'] != $currentUserId /*&& 
+        if ($POST_DATA['form_profile_users_id'] != $currentUserId /*&&
         !in_array('PERM_UPDATE_OTHERS_PROFILE', $_SESSION['user']['info']['permissions'], true)*/) {
             return $return_url;
         }
@@ -717,7 +759,7 @@ class Dostuff
         if (!empty($POST_DATA['form_profile_national_id_number'])) {
             $POST_DATA['form_profile_national_id_number'] = Dostuff::stripSpacesAndDashes($POST_DATA['form_profile_national_id_number']);
         }
-        
+
         // Let the validation begin!
         $validation['given_name'] = empty($POST_DATA['form_profile_given_name']) ? false : true;
         $validation['family_name'] = empty($POST_DATA['form_profile_family_name']) ? false : true;
@@ -734,7 +776,7 @@ class Dostuff
                                         true : false;
         $validation['email'] = !empty($POST_DATA['form_profile_email']) && Data\User::isValidEmail($POST_DATA['form_profile_email']) ? true : false;
         $validation['national_id_number'] = !empty($POST_DATA['form_profile_national_id_number']) && Data\User::isValidNationalIdNumber($POST_DATA['form_profile_national_id_number']) ? true : false;
-        
+
         $error_text['given_name'] = 'Du måste ange ditt förnamn.';
         $error_text['family_name'] = 'Du måste ange ditt efternamn.';
         $error_text['address'] = 'Du måste ange din gatuadress.';
@@ -743,11 +785,11 @@ class Dostuff
         $error_text['phone_number'] = 'Du måste ange ditt telefonnummer med endast siffror.';
         $error_text['email'] = 'Du måste ange din email på ett korrekt sätt.';
         $error_text['national_id_number'] = 'Du måste ange ditt personnummer.';
-        
+
         $exceptions = array('form_profile_users_id', 'submit_dostuff');
         $validateInputResult = Dostuff::validateInput($POST_DATA, $validation, $error_text, $exceptions, $return_url, 'user_profile_update');
         if ($validateInputResult['valid'] === false) { return $validateInputResult['return_url']; }
-        
+
         // Prepare the new user information.
         $userData = Dostuff::stripPrefixesForAllKeys($POST_DATA, 'form_profile_');
         $userData['country'] = 'Sweden';
@@ -775,7 +817,7 @@ class Dostuff
 
         return $validateInputResult['return_url'];
     }
-    
+
     public static function register_convention($userId, $POST_DATA, Data\IConventionRegistrationRepository $crr)
     {
         $registration = $crr->getRegistrationByUserId($userId);
@@ -795,7 +837,7 @@ class Dostuff
             View\Alerts::set('success', 'Dina anmälan har uppdaterats. Se FAQ nedan för hur du betalar.');
         }
     }
-    
+
     public static function confirm_payment($POST_DATA, Data\IConventionRegistrationRepository $crr, Data\IUserRepository $ur)
     {
         if (!in_array('PERM_COMFIRM_USER_PAYMENTS', $_SESSION['user']['info']['permissions'], true)) { return; }
@@ -805,14 +847,14 @@ class Dostuff
         $crr->updateRegistration($registration[0]['convention_registrations_id'],
                                     $registration[0]['number_of_updates'],
                                     $POST_DATA);
-                                    
+
         if ($crr->confirmPayment($POST_DATA['convention_registrations_id']))
         {
             $email = $ur->getEmailByUserId($POST_DATA['users_id']);
             Data\MailSender::notifyUserPaymentConfirmed($email);
         }
     }
-    
+
     public static function dismiss_payment($POST_DATA, Data\IConventionRegistrationRepository $crr, Data\IUserRepository $ur)
     {
         if (!in_array('PERM_COMFIRM_USER_PAYMENTS', $_SESSION['user']['info']['permissions'], true)) { return; }
@@ -934,11 +976,11 @@ class Dostuff
 
         return array('valid' => $valid, 'return_url' => $return_url);
     }
-    
+
     private static function stripSpacesAndDashes($text) {
         return str_replace('-', '', str_replace(' ', '', $text));
     }
-    
+
     private static function stripPrefixesForAllKeys($data, $prefix)
     {
         $arr = array();

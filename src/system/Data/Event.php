@@ -38,11 +38,11 @@ class Event
 
     public function getEventSchedule($event = false)
     {
-        if ($event === false || !is_numeric($event)) {
-            $out = '
+        if ($event === false || ($event !== true && !is_numeric($event))) {
+            $out_html = '
         <p>Inga registrerade speltillfällen kunde hittas. <span class="fa fa-frown-o"></span></p>';
 
-            return $out;
+            return $out_html;
         } else {
 
             $schedule_request = array(
@@ -54,11 +54,16 @@ class Event
                 'orderby' => 'date_start',
             );
 
+            if ($event === true) {
+                unset($schedule_request['where']);
+            }
+
             $schedule = Data\Database::read($schedule_request, false);
 
             if (isset($schedule[0])) {
 
                 foreach ($schedule as $occasion) {
+
                     $occasion_duration = (strtotime($occasion['date_end']) - strtotime($occasion['date_start'])) / 60;
                     $weekday_start_no = date('w', strtotime($occasion['date_start']));
                     $weekday_end_no = date('w', strtotime($occasion['date_end']));
@@ -83,13 +88,25 @@ class Event
                     <td style="white-space:nowrap">' . $time_start . '-' . $time_end . ' <small>(' . $occasion_duration . ')</small></td>
                     <td style="white-space:nowrap">' . $occasion['location'] . '</td>
                     <td><span class="hidden-xs">' . $occasion_notes . '</span><span class="visible-xs-block' . ($occasion_notes == '&nbsp;' ? '' : ' has-tooltip') . '"' . ($occasion_notes == '&nbsp;' ? '' : 'title="' . $occasion_notes . '"') . '>' . ($occasion_notes == '&nbsp;' ? '' : '<span class="fa fa-comment"></span>') . '</span></td>
-                    <td><span class="fa fa-lock has-tooltip" title="Ställ in tillfälle"></span></td>
-                    <td><span class="fa fa-times has-tooltip" title="Ta bort tillfälle"></span></td>
+                    <td><a href="' . Data\Settings::main('base_url') . 'dostuff.php?submit_dostuff=event_cancel_occassion&event_id=' . $event . '&event_schedule_id=' . $occasion['event_schedule_id'] . '&do_cancel=' . ($occasion['cancelled'] === '1' ? '0' : '1') . '"><span class="fa fa-lock has-tooltip" title="Ställ in tillfälle"></span></a></td>
+                    <td><a href="' . Data\Settings::main('base_url') . 'dostuff.php?submit_dostuff=event_delete_occassion&event_id=' . $event . '&event_schedule_id=' . $occasion['event_schedule_id'] . '"><span class="fa fa-times has-tooltip" title="Ta bort tillfälle"></span></a></td>
                 </tr>';
 
+                    if ($event === true) {
+                        $event_data = $this->getData($occasion['events_id']);
+
+                        $schedule_js[] = '
+    {
+        "id":"' . $occasion['event_schedule_id'] . '",
+        "text":"' . $event_data['title'] . ($occasion['location'] == '' ? '' : ' (' . $occasion['location'] . ')') . '",
+        "start":"' . date("Y-m-d\TH:i:s", strtotime($occasion['date_start'])) . '",
+        "end":"' . date("Y-m-d\TH:i:s", strtotime($occasion['date_end'])) . '"
+    }';
+
+                    }
                 }
 
-                $out = '
+                $out_html = '
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -101,16 +118,26 @@ class Event
                 </tr>
             </thead>
             <tbody>';
-                $out .= implode('', $schedule_body);
-                $out .= '
+                $out_html .= implode('', $schedule_body);
+                $out_html .= '
             </tbody>
         </table>';
+
+                if ($event === true) {
+                    $out_js = implode(',' . "\n", $schedule_js);
+                } else {
+                    $out_js = '';
+                }
+
             } else {
-                $out = '
+
+                $out_html = '
         <p>Inga registrerade speltillfällen kunde hittas. <span class="fa fa-frown-o"></span></p>';
+                $out_js = '';
+
             }
 
-            return $out;
+            return ($event === true ? $out_js : $out_html);
         }
     }
 
