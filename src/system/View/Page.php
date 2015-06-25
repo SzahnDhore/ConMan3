@@ -50,6 +50,10 @@ class Page
                                                                 $_SESSION['user']['info']['permissions']);
         $page_content['show_adminpage_nbr_of_unconfirmed_payments'] = $crr->getNumberOfUnconfirmedPayments();
 
+        $page_content['show_adminpage_confirm_visitor'] = isset($_SESSION['user']) &&
+                                                                            in_array('PERM_COMFIRM_VISITOR',
+                                                                                $_SESSION['user']['info']['permissions']);
+
         $page_content['show_adminpage_view_statistics'] = isset($_SESSION['user']) &&
                                                             in_array('stab', $_SESSION['user']['info']['groups']);
 

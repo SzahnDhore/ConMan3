@@ -15,6 +15,7 @@
 
 {% if show_adminpage_confirm_payments or
       show_adminpage_confirm_updated_user_information or
+      show_adminpage_confirm_visitor or
       show_adminpage_view_statistics or
       show_adminpage_view_users_and_groups or
       show_adminpage_view_groups_and_permissions %}
@@ -35,8 +36,12 @@
                             {% if show_adminpage_confirm_payments %}
                                 <li><a href="{{ base_url }}index.php?page=confirmpayments">Godkänn betalningar {% if show_adminpage_nbr_of_unconfirmed_payments > 0 %}<span class="badge">{{ show_adminpage_nbr_of_unconfirmed_payments }}</span>{% endif %}</a></li>
                             {% endif %}
+                            {% if show_adminpage_confirm_visitor %}
+                                <li><a href="{{ base_url }}index.php?page=confirmvisitor">Stämpla in besökare</a></li>
+                            {% endif %}
                             {% if (show_adminpage_confirm_payments or
-                                  show_adminpage_confirm_updated_user_information) and
+                                  show_adminpage_confirm_updated_user_information or
+                                  show_adminpage_confirm_visitor) and
                                   show_adminpage_view_statistics %}
                                 <li class="divider"></li>
                             {% endif %}
