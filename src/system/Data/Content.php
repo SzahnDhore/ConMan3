@@ -39,31 +39,50 @@ class Content
         return $out;
     }
     
-    public static function getEntranceContentForRegistrationPage()
+    public static function getEntranceContentForRegistrationPage($registration_id = 0)
     {
         // Since the Database class does not support joins and advanced queries, we have
         // to make multiple calls to the database...
-        $this_registration_period_request = array(
-            'table' => 'convention_registration_periods',
-            'select' => 'convention_registration_periods_id',
-            'limit' => 1,
-            'where' => array(
-                'col' => 'last_registration_date',
-                'query' => 'between',
-                'values' => array(
-                    date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+1 year'))
+        $reg_per_id = 0;
+        if (is_numeric($registration_id) && $registration_id > 0)
+        {
+            $db_request = array(
+                'table' => 'convention_registration_form',
+                'select' => 'belongs_to_registration_period',
+                'limit' => 1,
+                'where' => array(
+                    'col' => 'convention_registration_form_id',
+                    'values' => $registration_id
+                )
+            );
+            $registration_form_id = Data\Database::read($db_request, false);
+            $reg_per_id = $registration_form_id[0]['belongs_to_registration_period'];
+        }
+        else
+        {
+            $this_registration_period_request = array(
+                'table' => 'convention_registration_periods',
+                'select' => 'convention_registration_periods_id',
+                'limit' => 1,
+                'where' => array(
+                    'col' => 'last_registration_date',
+                    'query' => 'between',
+                    'values' => array(
+                        date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+1 year'))
+                    ),
                 ),
-            ),
-            'orderby' => 'last_registration_date'
-        );
-        $registration_form_id = Data\Database::read($this_registration_period_request, false);
-        if (empty($registration_form_id)) { return ''; }
+                'orderby' => 'last_registration_date'
+            );
+            $registration_form_id = Data\Database::read($this_registration_period_request, false);
+            if (empty($registration_form_id)) { return ''; }
+            $reg_per_id = $registration_form_id[0]['convention_registration_periods_id'];
+        }
 
         $this_registration_form_request = array(
             'table' => 'convention_registration_form',
             'where' => array(
                 'col' => 'belongs_to_registration_period',
-                'values' => $registration_form_id[0]['convention_registration_periods_id'],
+                'values' => $reg_per_id,
             )
         );
         $result = Data\Database::read($this_registration_form_request, false);

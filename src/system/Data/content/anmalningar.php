@@ -15,7 +15,12 @@ use \Szandor\ConMan\View as View;
 $user_info = $_SESSION['user']['info'];
 $crr = new Data\MySQLConventionRegistrationRepository();
 $registration_data = $crr->getRegistrationByUserId($_SESSION['user']['info']['data']['id']);
-$registration_content_array = Data\Content::getEntranceContentForRegistrationPage();
+$id = 0;
+if (!empty($registration_data) && isset($registration_data[0]['convention_registration_form_id']))
+{
+    $id = $registration_data[0]['convention_registration_form_id'];
+}
+$registration_content_array = Data\Content::getEntranceContentForRegistrationPage($id);
 
 /**
  * The following is simple contents.
