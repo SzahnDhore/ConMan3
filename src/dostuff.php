@@ -160,6 +160,11 @@ switch ($_POST['submit_dostuff']) {
         $go_to_page = 'index.php?page=confirmstageduserdetails';
         break;
 
+    case 'visitor_confirmed' :
+        Dostuff::visitor_confirmed($_POST, $crr);
+        $go_to_page = 'index.php?page=confirmvisitor';
+        break;
+
     default :
         break;
 }
@@ -947,6 +952,10 @@ class Dostuff
         View\Alerts::set('warning', 'Uppgifterna för användaren har inte godkänts.');
     }
 
+    public static function visitor_confirmed($POST_DATA, Data\IConventionRegistrationRepository $crr)
+    {
+        $crr->confirmVisit($POST_DATA['form_confirm_visit_users_id'], $POST_DATA['form_confirm_visit_entrance_group_type']);
+    }
 
     private static function validateInput($POST_DATA, $validation, $error_text, $exceptions,
                                           $return_url, $prefix_for_success) {

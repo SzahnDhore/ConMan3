@@ -14,6 +14,9 @@ interface IConventionRegistrationRepository
     public function confirmPayment($paymentId);
     public function dismissPayment($paymentId);
 
+    public function confirmVisit($userId, $visitType);
+    public function getAllVisitorUserIds();
+
     // statistics part
     public function getTimeDifferenceRegistrationCreatedAndPaymentRegistered($daysBackInTime);
     public function getRegistrationsPerDay();

@@ -217,6 +217,15 @@ CREATE TABLE IF NOT EXISTS `szcm3_convention_registration_periods` (
   PRIMARY KEY (`convention_registration_periods_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `szcm3_convention_visits` (
+  `convention_visit_id` int(15) unsigned NOT NULL AUTO_INCREMENT,
+  `date_created` datetime NOT NULL,
+  `date_updated` datetime NOT NULL,
+  `type` int(15) NOT NULL,
+  `users_id` int(15) NOT NULL,
+  PRIMARY KEY (`convention_visit_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 /*
  * Basic setup for a convention with preregistrations...
  */

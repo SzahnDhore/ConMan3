@@ -133,7 +133,28 @@ class MySQLConventionRegistrationRepository implements IConventionRegistrationRe
             );
         return Data\Database::update($request, false);
     }
-    
+
+    public function confirmVisit($userId, $visitType)
+    {
+        $request = array(
+            'table' => 'convention_visits',
+            'data' => array( array(
+                    'users_id' => $userId,
+                    'type' => $visitType
+                )),
+            );
+        $registration_id = Data\Database::create($request, false);
+    }
+
+    public function getAllVisitorUserIds()
+    {
+        $request = array(
+            'table' => 'convention_visits',
+            'select' => 'users_id'
+        );
+        return Data\Database::read($request, false);
+    }
+
     public function getTimeDifferenceRegistrationCreatedAndPaymentRegistered($daysBackInTime)
     {
         if (!is_numeric($daysBackInTime)) { return false; }
