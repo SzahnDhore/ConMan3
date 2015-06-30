@@ -8,7 +8,7 @@ use \Szandor\ConMan\View as View;
 
 $crr = new Data\MySQLConventionRegistrationRepository();
 $ur = new Data\MySQLUserRepository();
-$registrations = $crr->getRegistrationData();
+$registrations = $crr->getRegistrationData(true);
 $confirmed_visitors = $crr->getAllVisitorUserIds();
 
 $entranceTypes = $crr->getAllEntranceTypesForAllPeriods();

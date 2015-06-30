@@ -74,8 +74,14 @@ class MySQLConventionRegistrationRepository implements IConventionRegistrationRe
         return Data\Database::read($users_request, false);
     }
 
-    public function getRegistrationData()
+    public function getRegistrationData($include_all_payments = false)
     {
+        $where = '(payment_registered > now() - INTERVAL 3 DAY) OR payment_registered is NULL';
+        if ($include_all_payments)
+        {
+            $where = 'payment_registered is not NULL';
+        }
+        
         $registrations_request = '
                             SELECT szcm3_convention_registrations.*,
                                 szcm3_convention_registration_form.if_member_price_reduced_by,
@@ -96,8 +102,7 @@ class MySQLConventionRegistrationRepository implements IConventionRegistrationRe
                                 LEFT JOIN `szcm3_user_details` ON
                                     szcm3_convention_registrations.users_id=
                                     szcm3_user_details.users_id
-                                WHERE (payment_registered > now() - INTERVAL 3 DAY) OR
-                                    payment_registered is NULL
+                                WHERE ' . $where . '
                             ORDER BY szcm3_convention_registrations.date_created DESC;';
             return Data\Database::read_raw_sql($registrations_request, array());
     }
